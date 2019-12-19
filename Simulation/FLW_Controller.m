@@ -5,18 +5,19 @@ classdef FLW_Controller <matlab.System & matlab.system.mixin.Propagates & matlab
     properties(Access = private)
        stanceLeg = -1;
        t0= 0;
+       total_mass = 32;
     end % properties
     
     % PROTECTED METHODS =====================================================
     methods (Access = protected)
         
         function [u, Data] = stepImpl(obj,x,t,GRF)
-            Data = 0;
+            Data = Construct_Data();
             q = x(1:7);
             dq = x(8:14);
             % Let the output be torso angle, com height and delta x,delta z of swing
             % feet and com. delta = p_com - p_swfeet.
-            T = 0.4; % walking period
+            T = 0.3; % walking period
             Kd = 50;
             Kp = 400;
             g=9.81;
@@ -46,22 +47,6 @@ classdef FLW_Controller <matlab.System & matlab.system.mixin.Propagates & matlab
                 obj.t0 = t;
             end
             
-            
-            
-%             hr= [-pi/6;0.6;0;(s-0.5)^2+0.35];
-%             dhr = [0;0;0;2*(s-0.5)*ds];
-%             ddhr = [0;0;0;2*ds^2];
-            D = 0.2; % Desired Distance per step
-            p_com = p_COM(q);
-            LG = getFLWAngularMomentum(p_com,x);
-            LBf = 32*(q(2)*dq(1))+LG(2);
-%             LBf = 32*(q(2)*dq(1));
-            dx0 = LBf/(32*q(2));
-            l = sqrt(g/q(2));
-            x0 = (2*D - dx0/l*(exp(T*l)-exp(-T*l)))/...
-                (exp(T*l)+exp(-T*l) - 2);
-            
-            
             p_LT = p_LeftToe(q);
             p_RT = p_RightToe(q);
             Jp_LT = Jp_LeftToe(q);
@@ -77,6 +62,27 @@ classdef FLW_Controller <matlab.System & matlab.system.mixin.Propagates & matlab
             Jrp_RT = Jp_COM(q) - Jp_RightToe(q);
             dJrp_LT = dJp_COM(q,dq)-dJp_LeftToe(q,dq);
             dJrp_RT = dJp_COM(q,dq)-dJp_RightToe(q,dq);
+            
+
+            D = 0.2; % Desired Distance per step
+            p_com = p_COM(q);
+            v_com = Jp_COM(q)*dq;
+            LG = getFLWAngularMomentum(p_com,x);
+            L_LeftToe = getFLWAngularMomentum(p_LT,x);
+            L_RightToe = getFLWAngularMomentum(p_RT,x);
+            L_LeftToe_vg = obj.total_mass*cross(rp_LT,v_com);
+            L_RightToe_vg = obj.total_mass*cross(rp_RT,v_com);
+            
+            
+            LBf = 32*(q(2)*dq(1))+LG(2);
+%             LBf = 32*(q(2)*dq(1));
+            dx0 = LBf/(32*q(2));
+            l = sqrt(g/q(2));
+            x0 = (2*D - dx0/l*(exp(T*l)-exp(-T*l)))/...
+                (exp(T*l)+exp(-T*l) - 2);
+            
+            
+
             
             M = InertiaMatrix(q);
             C = CoriolisTerm(q,dq);
@@ -127,7 +133,9 @@ classdef FLW_Controller <matlab.System & matlab.system.mixin.Propagates & matlab
             hr= [0;0.6;h0(3);(s-0.5)^2+0.35];
             dhr = [0;0;(x0 - h0(3))/(1-s)/T;2*(s-0.5)*ds];
             ddhr = [0;0;0;2*ds^2];
-            
+%             hr= [-pi/6;0.6;0;(s-0.5)^2+0.35];
+%             dhr = [0;0;0;2*(s-0.5)*ds];
+%             ddhr = [0;0;0;2*ds^2];
             Me = [M -Jg';Jg,zeros(2,2)];
             He = [C+G;dJg*dq];
             Be = [B;zeros(2,4)];
@@ -138,7 +146,14 @@ classdef FLW_Controller <matlab.System & matlab.system.mixin.Propagates & matlab
             dy = dh0 - dhr;
             
             u = (Jh*S*Me^-1*Be)^-1*(-Kd*dy-Kp*y+ddhr+Jh*S*Me^-1*He);
-            Data = x0;
+%             u = 10*ones(4,1)*sin(t);
+            %% Data assignment
+            Data.stanceLeg = obj.stanceLeg;
+            Data.LG = LG(2);
+            Data.L_LeftToe = L_LeftToe(2);
+            Data.L_RightToe = L_RightToe(2);
+            Data.L_LeftToe_vg = L_LeftToe_vg(2);
+            Data.L_RightToe_vg = L_RightToe_vg(2);
         end % stepImpl
 
         %% Default functions
@@ -173,7 +188,7 @@ classdef FLW_Controller <matlab.System & matlab.system.mixin.Propagates & matlab
         function [u, Data] = getOutputDataTypeImpl(~)
             %GETOUTPUTDATATYPEIMPL Get data types of output ports.
             u = 'double';
-            Data = 'double';
+            Data = 'cassieDataBus';
         end % getOutputDataTypeImpl
         
         function [u, Data] = isOutputComplexImpl(~)

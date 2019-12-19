@@ -38,3 +38,5 @@ base_xz = base_xyz([1,3]);
 dbase_xz = dbase_xyz([1,3]);
 IC = [base_xz;base_rot;q1L;q2L;q1R;q2R;...
     dbase_xz;dbase_rot;dq1L;dq2L;dq1R;dq2R];
+
+% IC(2) = 10;
