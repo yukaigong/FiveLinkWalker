@@ -1,0 +1,91 @@
+<robot name="five_link_walker" xmlns:xacro="http://ros.org/wiki/xacro">
+  <link name="torso">
+    <inertial>
+      <origin xyz="0 0 0.24" rpy="0 0 0"/>
+      <mass value="12"/>
+      <inertia ixx="0" ixy="0" ixz="0" iyy="1.33" iyz="0" izz="0"/>
+    </inertial>
+  </link>
+  <link name="LeftThigh">
+    <inertial>
+      <origin xyz="0 0 -0.11" rpy="0 0 0"/>
+      <mass value="6.8"/>
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0.47" iyz="0" izz="0"/>
+    </inertial>
+  </link>
+  <link name="LeftShin">
+    <inertial>
+      <origin xyz="0 0 -0.24" rpy="0 0 0"/>
+      <mass value="3.2"/>
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0.2" iyz="0" izz="0"/>
+    </inertial>
+  </link>
+  <link name="RightThigh">
+    <inertial>
+      <origin xyz="0 0 -0.11" rpy="0 0 0"/>
+      <mass value="6.8"/>
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0.47" iyz="0" izz="0"/>
+    </inertial>
+  </link>
+  <link name="RightShin">
+    <inertial>
+      <origin xyz="0 0 -0.24" rpy="0 0 0"/>
+      <mass value="3.2"/>
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0.2" iyz="0" izz="0"/>
+    </inertial>
+  </link>
+
+   <joint name="LeftHip" type="continuous">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <parent link="torso"/>
+    <child link="LeftThigh"/>
+  </joint>
+  <joint name="LeftKnee" type="continuous">
+    <origin xyz="0 0 -0.4" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <parent link="LeftThigh"/>
+    <child link="LeftShin"/>
+  </joint>
+  <joint name="RightHip" type="continuous">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <parent link="torso"/>
+    <child link="RightThigh"/>
+  </joint>
+   <joint name="RightKnee" type="continuous">
+    <origin xyz="0 0 -0.4" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <parent link="RightThigh"/>
+    <child link="RightShin"/>
+  </joint>
+
+<transmission name="LeftHip_trans" type="pr2_mechanism_model/SimpleTransmission">
+	<joint name="LeftHip"/>
+	<actuator name="LeftHip_motor"/>
+	<mechanicalReduction>50</mechanicalReduction>
+    <motorInertia>0</motorInertia>
+</transmission>
+
+<transmission name="LeftKnee_trans" type="pr2_mechanism_model/SimpleTransmission">
+	<joint name="LeftKnee"/>
+	<actuator name="LeftKnee_motor"/>
+	<mechanicalReduction>50</mechanicalReduction>
+    <motorInertia>0</motorInertia>
+</transmission>
+
+<transmission name="RightHip_trans" type="pr2_mechanism_model/SimpleTransmission">
+	<joint name="RightHip"/>
+	<actuator name="RightHip_motor"/>
+	<mechanicalReduction>50</mechanicalReduction>
+    <motorInertia>0</motorInertia>
+</transmission>
+
+<transmission name="RightKnee_trans" type="pr2_mechanism_model/SimpleTransmission">
+	<joint name="RightKnee"/>
+	<actuator name="RightKnee_motor"/>
+	<mechanicalReduction>50</mechanicalReduction>
+    <motorInertia>0</motorInertia>
+</transmission>
+
+</robot>
