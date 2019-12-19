@@ -29,8 +29,8 @@ dq2L = 0;
 dq1R = 0-dbase_rot;
 dq2R = 0;
 
-% base_xyz = -p_LeftToe([0;0;base_rot;q1L;q2L;q1R;q2R]);
-% dbase_xyz = -Jp_LeftToe([0;0;base_rot;q1L;q2L;q1R;q2R])*[0;0;dbase_rot;dq1L;dq2L;dq1R;dq2R];
+base_xyz = -p_LeftToe([0;0;base_rot;q1L;q2L;q1R;q2R]);
+dbase_xyz = -Jp_LeftToe([0;0;base_rot;q1L;q2L;q1R;q2R])*[0;0;dbase_rot;dq1L;dq2L;dq1R;dq2R];
 % base_xyz = -p_RightToe([0;0;base_rot;q1L;q2L;q1R;q2R]);
 % dbase_xyz = -Jp_RightToe([0;0;base_rot;q1L;q2L;q1R;q2R])*[0;0;dbase_rot;dq1L;dq2L;dq1R;dq2R];
 
