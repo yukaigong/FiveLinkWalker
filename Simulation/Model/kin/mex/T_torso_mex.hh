@@ -1,6 +1,6 @@
 /*
  * Automatically Generated from Mathematica.
- * Wed 18 Dec 2019 16:25:10 GMT-05:00
+ * Wed 18 Dec 2019 23:16:30 GMT-05:00
  */
 
 #ifndef T_TORSO_MEX_HH
@@ -17,9 +17,9 @@
 namespace SymExpression
 {
 
-  void T_torso_mex_raw(double *p_output1, const double *var1);
+  void T_Torso_mex_raw(double *p_output1, const double *var1);
 
-  inline void T_torso_mex(Eigen::MatrixXd &p_output1, const Eigen::VectorXd &var1)
+  inline void T_Torso_mex(Eigen::MatrixXd &p_output1, const Eigen::VectorXd &var1)
   {
     // Check
     // - Inputs
@@ -35,7 +35,7 @@ namespace SymExpression
 
 
     // Call Subroutine with raw data
-    T_torso_mex_raw(p_output1.data(), var1.data());
+    T_Torso_mex_raw(p_output1.data(), var1.data());
     }
   
   

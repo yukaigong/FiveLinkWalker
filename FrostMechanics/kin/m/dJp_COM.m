@@ -4,7 +4,7 @@ function [output1] = dJp_COM(var1,var2)
     else
         coder.cinclude('dJp_COM_src.h');
         
-        output1 = zeros(3, 1);
+        output1 = zeros(3, 7);
 
         
         coder.ceval('dJp_COM_src' ...

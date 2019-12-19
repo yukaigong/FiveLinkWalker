@@ -1,6 +1,6 @@
 /*
  * Automatically Generated from Mathematica.
- * Wed 18 Dec 2019 22:18:19 GMT-05:00
+ * Thu 19 Dec 2019 02:11:59 GMT-05:00
  */
 
 #ifndef DJP_COM_MEX_HH
@@ -28,7 +28,7 @@ namespace SymExpression
 
 	
     // - Outputs
-    assert_size_matrix(p_output1, 3, 1);
+    assert_size_matrix(p_output1, 3, 7);
 
 
     // set zero the matrix

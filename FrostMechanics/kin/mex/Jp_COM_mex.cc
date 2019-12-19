@@ -1,6 +1,6 @@
 /*
  * Automatically Generated from Mathematica.
- * Wed 18 Dec 2019 22:18:18 GMT-05:00
+ * Thu 19 Dec 2019 02:11:58 GMT-05:00
  */
 
 #ifdef MATLAB_MEX_FILE
@@ -46,159 +46,177 @@ inline double Csc(double x) { return 1/sin(x); }
 /*
  * Sub functions
  */
-static void output1(double *p_output1,const double *var1,const double *var2)
+static void output1(double *p_output1,const double *var1)
 {
-  double t27;
-  double t54;
-  double t13;
-  double t55;
-  double t6;
-  double t53;
-  double t67;
-  double t82;
-  double t84;
-  double t85;
-  double t86;
-  double t87;
-  double t94;
-  double t117;
-  double t118;
-  double t119;
-  double t132;
-  double t134;
-  double t131;
-  double t133;
-  double t135;
-  double t136;
-  double t138;
-  double t139;
-  double t140;
-  double t144;
-  double t146;
-  double t156;
-  double t157;
-  double t158;
-  double t113;
-  double t114;
-  double t115;
-  double t116;
-  double t120;
-  double t121;
-  double t122;
-  double t123;
-  double t124;
-  double t125;
-  double t152;
-  double t153;
-  double t154;
-  double t155;
-  double t159;
-  double t160;
-  double t161;
-  double t162;
-  double t163;
-  double t164;
-  double t173;
-  double t181;
-  double t182;
-  double t183;
-  double t194;
-  double t202;
-  double t203;
-  double t204;
-  double t179;
-  double t180;
-  double t184;
-  double t185;
-  double t186;
-  double t187;
-  double t188;
-  double t189;
-  double t200;
-  double t201;
-  double t205;
-  double t206;
-  double t207;
-  double t208;
-  double t209;
-  double t210;
-  t27 = Cos(var1[3]);
-  t54 = Sin(var1[2]);
-  t13 = Cos(var1[2]);
-  t55 = Sin(var1[3]);
-  t6 = Cos(var1[4]);
-  t53 = t13*t27;
-  t67 = -1.*t54*t55;
-  t82 = t53 + t67;
-  t84 = t27*t54;
-  t85 = t13*t55;
-  t86 = t84 + t85;
-  t87 = Sin(var1[4]);
-  t94 = t6*t82;
-  t117 = -1.*t27*t54;
-  t118 = -1.*t13*t55;
-  t119 = t117 + t118;
-  t132 = Cos(var1[5]);
-  t134 = Sin(var1[5]);
-  t131 = Cos(var1[6]);
-  t133 = t13*t132;
-  t135 = -1.*t54*t134;
-  t136 = t133 + t135;
-  t138 = t132*t54;
-  t139 = t13*t134;
-  t140 = t138 + t139;
-  t144 = Sin(var1[6]);
-  t146 = t131*t136;
-  t156 = -1.*t132*t54;
-  t157 = -1.*t13*t134;
-  t158 = t156 + t157;
-  t113 = -0.748*t82;
-  t114 = -1.*t6;
-  t115 = 1. + t114;
-  t116 = -0.4*t115*t82;
-  t120 = 0.4*t119*t87;
-  t121 = t119*t87;
-  t122 = t94 + t121;
-  t123 = -0.64*t122;
-  t124 = t116 + t120 + t123;
-  t125 = 3.2*t124;
-  t152 = -0.748*t136;
-  t153 = -1.*t131;
-  t154 = 1. + t153;
-  t155 = -0.4*t154*t136;
-  t159 = 0.4*t158*t144;
-  t160 = t158*t144;
-  t161 = t146 + t160;
-  t162 = -0.64*t161;
-  t163 = t155 + t159 + t162;
-  t164 = 3.2*t163;
-  t173 = t6*t119;
-  t181 = -1.*t13*t27;
-  t182 = t54*t55;
-  t183 = t181 + t182;
-  t194 = t131*t158;
-  t202 = -1.*t13*t132;
-  t203 = t54*t134;
-  t204 = t202 + t203;
-  t179 = -0.748*t119;
-  t180 = -0.4*t115*t119;
-  t184 = 0.4*t183*t87;
-  t185 = t183*t87;
-  t186 = t173 + t185;
-  t187 = -0.64*t186;
-  t188 = t180 + t184 + t187;
-  t189 = 3.2*t188;
-  t200 = -0.748*t158;
-  t201 = -0.4*t154*t158;
-  t205 = 0.4*t204*t144;
-  t206 = t204*t144;
-  t207 = t194 + t206;
-  t208 = -0.64*t207;
-  t209 = t201 + t205 + t208;
-  t210 = 3.2*t209;
-  p_output1[0]=var2[0] + 0.03125*(t113 + t125 + 2.88*t13 + t152 + t164)*var2[2] + 0.03125*(t113 + t125)*var2[3] + 0.1*(0.4*t6*t82 - 0.4*t86*t87 - 0.64*(-1.*t86*t87 + t94))*var2[4] + 0.03125*(t152 + t164)*var2[5] + 0.1*(0.4*t131*t136 - 0.4*t140*t144 - 0.64*(-1.*t140*t144 + t146))*var2[6];
+  double t1299;
+  double t1362;
+  double t1388;
+  double t1389;
+  double t1390;
+  double t1402;
+  double t1417;
+  double t1419;
+  double t1423;
+  double t1429;
+  double t1433;
+  double t1434;
+  double t1452;
+  double t1453;
+  double t1454;
+  double t1455;
+  double t1456;
+  double t1458;
+  double t1465;
+  double t1466;
+  double t1467;
+  double t1468;
+  double t1420;
+  double t1421;
+  double t1484;
+  double t1485;
+  double t1486;
+  double t1459;
+  double t1460;
+  double t1496;
+  double t1497;
+  double t1498;
+  double t1418;
+  double t1422;
+  double t1438;
+  double t1443;
+  double t1447;
+  double t1448;
+  double t1449;
+  double t1450;
+  double t1451;
+  double t1482;
+  double t1483;
+  double t1487;
+  double t1488;
+  double t1489;
+  double t1490;
+  double t1491;
+  double t1492;
+  double t1493;
+  double t1513;
+  double t1514;
+  double t1515;
+  double t1457;
+  double t1461;
+  double t1469;
+  double t1470;
+  double t1471;
+  double t1472;
+  double t1473;
+  double t1474;
+  double t1475;
+  double t1494;
+  double t1495;
+  double t1499;
+  double t1500;
+  double t1501;
+  double t1502;
+  double t1503;
+  double t1504;
+  double t1505;
+  double t1534;
+  double t1535;
+  double t1536;
+  t1299 = Cos(var1[2]);
+  t1362 = Cos(var1[3]);
+  t1388 = t1299*t1362;
+  t1389 = Sin(var1[2]);
+  t1390 = Sin(var1[3]);
+  t1402 = -1.*t1389*t1390;
+  t1417 = t1388 + t1402;
+  t1419 = Cos(var1[4]);
+  t1423 = -1.*t1362*t1389;
+  t1429 = -1.*t1299*t1390;
+  t1433 = t1423 + t1429;
+  t1434 = Sin(var1[4]);
+  t1452 = Cos(var1[5]);
+  t1453 = t1299*t1452;
+  t1454 = Sin(var1[5]);
+  t1455 = -1.*t1389*t1454;
+  t1456 = t1453 + t1455;
+  t1458 = Cos(var1[6]);
+  t1465 = -1.*t1452*t1389;
+  t1466 = -1.*t1299*t1454;
+  t1467 = t1465 + t1466;
+  t1468 = Sin(var1[6]);
+  t1420 = -1.*t1419;
+  t1421 = 1. + t1420;
+  t1484 = -1.*t1299*t1362;
+  t1485 = t1389*t1390;
+  t1486 = t1484 + t1485;
+  t1459 = -1.*t1458;
+  t1460 = 1. + t1459;
+  t1496 = -1.*t1299*t1452;
+  t1497 = t1389*t1454;
+  t1498 = t1496 + t1497;
+  t1418 = -0.748*t1417;
+  t1422 = -0.4*t1421*t1417;
+  t1438 = 0.4*t1433*t1434;
+  t1443 = t1419*t1417;
+  t1447 = t1433*t1434;
+  t1448 = t1443 + t1447;
+  t1449 = -0.64*t1448;
+  t1450 = t1422 + t1438 + t1449;
+  t1451 = 3.2*t1450;
+  t1482 = -0.748*t1433;
+  t1483 = -0.4*t1421*t1433;
+  t1487 = 0.4*t1486*t1434;
+  t1488 = t1419*t1433;
+  t1489 = t1486*t1434;
+  t1490 = t1488 + t1489;
+  t1491 = -0.64*t1490;
+  t1492 = t1483 + t1487 + t1491;
+  t1493 = 3.2*t1492;
+  t1513 = t1362*t1389;
+  t1514 = t1299*t1390;
+  t1515 = t1513 + t1514;
+  t1457 = -0.748*t1456;
+  t1461 = -0.4*t1460*t1456;
+  t1469 = 0.4*t1467*t1468;
+  t1470 = t1458*t1456;
+  t1471 = t1467*t1468;
+  t1472 = t1470 + t1471;
+  t1473 = -0.64*t1472;
+  t1474 = t1461 + t1469 + t1473;
+  t1475 = 3.2*t1474;
+  t1494 = -0.748*t1467;
+  t1495 = -0.4*t1460*t1467;
+  t1499 = 0.4*t1498*t1468;
+  t1500 = t1458*t1467;
+  t1501 = t1498*t1468;
+  t1502 = t1500 + t1501;
+  t1503 = -0.64*t1502;
+  t1504 = t1495 + t1499 + t1503;
+  t1505 = 3.2*t1504;
+  t1534 = t1452*t1389;
+  t1535 = t1299*t1454;
+  t1536 = t1534 + t1535;
+  p_output1[0]=1.;
   p_output1[1]=0;
-  p_output1[2]=var2[1] + 0.03125*(t179 + t189 + t200 + t210 - 2.88*t54)*var2[2] + 0.03125*(t179 + t189)*var2[3] + 0.1*(0.4*t119*t6 - 0.4*t82*t87 - 0.64*(t173 - 1.*t82*t87))*var2[4] + 0.03125*(t200 + t210)*var2[5] + 0.1*(-0.4*t136*t144 + 0.4*t131*t158 - 0.64*(-1.*t136*t144 + t194))*var2[6];
+  p_output1[2]=0;
+  p_output1[3]=0;
+  p_output1[4]=0;
+  p_output1[5]=1.;
+  p_output1[6]=0.03125*(2.88*t1299 + t1418 + t1451 + t1457 + t1475);
+  p_output1[7]=0;
+  p_output1[8]=0.03125*(-2.88*t1389 + t1482 + t1493 + t1494 + t1505);
+  p_output1[9]=0.03125*(t1418 + t1451);
+  p_output1[10]=0;
+  p_output1[11]=0.03125*(t1482 + t1493);
+  p_output1[12]=0.1*(0.4*t1417*t1419 - 0.4*t1434*t1515 - 0.64*(t1443 - 1.*t1434*t1515));
+  p_output1[13]=0;
+  p_output1[14]=0.1*(0.4*t1419*t1433 - 0.4*t1417*t1434 - 0.64*(-1.*t1417*t1434 + t1488));
+  p_output1[15]=0.03125*(t1457 + t1475);
+  p_output1[16]=0;
+  p_output1[17]=0.03125*(t1494 + t1505);
+  p_output1[18]=0.1*(0.4*t1456*t1458 - 0.4*t1468*t1536 - 0.64*(t1470 - 1.*t1468*t1536));
+  p_output1[19]=0;
+  p_output1[20]=0.1*(0.4*t1458*t1467 - 0.4*t1456*t1468 - 0.64*(-1.*t1456*t1468 + t1500));
 }
 
 
@@ -214,13 +232,13 @@ void mexFunction( int nlhs, mxArray *plhs[],
 {
   size_t mrows, ncols;
 
-  double *var1,*var2;
+  double *var1;
   double *p_output1;
 
   /*  Check for proper number of arguments.  */ 
-  if( nrhs != 2)
+  if( nrhs != 1)
     {
-      mexErrMsgIdAndTxt("MATLAB:MShaped:invalidNumInputs", "Two input(s) required (var1,var2).");
+      mexErrMsgIdAndTxt("MATLAB:MShaped:invalidNumInputs", "One input(s) required (var1).");
     }
   else if( nlhs > 1)
     {
@@ -236,29 +254,20 @@ void mexFunction( int nlhs, mxArray *plhs[],
     {
       mexErrMsgIdAndTxt( "MATLAB:MShaped:inputNotRealVector", "var1 is wrong.");
     }
-  mrows = mxGetM(prhs[1]);
-  ncols = mxGetN(prhs[1]);
-  if( !mxIsDouble(prhs[1]) || mxIsComplex(prhs[1]) ||
-    ( !(mrows == 7 && ncols == 1) && 
-      !(mrows == 1 && ncols == 7))) 
-    {
-      mexErrMsgIdAndTxt( "MATLAB:MShaped:inputNotRealVector", "var2 is wrong.");
-    }
 
   /*  Assign pointers to each input.  */
   var1 = mxGetPr(prhs[0]);
-  var2 = mxGetPr(prhs[1]);
    
 
 
    
   /*  Create matrices for return arguments.  */
-  plhs[0] = mxCreateDoubleMatrix((mwSize) 3, (mwSize) 1, mxREAL);
+  plhs[0] = mxCreateDoubleMatrix((mwSize) 3, (mwSize) 7, mxREAL);
   p_output1 = mxGetPr(plhs[0]);
 
 
   /* Call the calculation subroutine. */
-  output1(p_output1,var1,var2);
+  output1(p_output1,var1);
 
 
 }
@@ -270,10 +279,10 @@ void mexFunction( int nlhs, mxArray *plhs[],
 namespace SymExpression
 {
 
-void Jp_COM_mex_raw(double *p_output1, const double *var1,const double *var2)
+void Jp_COM_mex_raw(double *p_output1, const double *var1)
 {
   // Call Subroutines
-  output1(p_output1, var1, var2);
+  output1(p_output1, var1);
 
 }
 

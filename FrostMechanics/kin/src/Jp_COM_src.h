@@ -1,6 +1,6 @@
 /*
  * Automatically Generated from Mathematica.
- * Wed 18 Dec 2019 22:18:19 GMT-05:00
+ * Thu 19 Dec 2019 02:11:59 GMT-05:00
  */
 
 #ifndef JP_COM_SRC_HH
@@ -12,6 +12,6 @@
 #include "rtwtypes.h"
 #endif
 
-void Jp_COM_src(double *p_output1, const double *var1,const double *var2);
+void Jp_COM_src(double *p_output1, const double *var1);
 
 #endif // JP_COM_SRC_HH

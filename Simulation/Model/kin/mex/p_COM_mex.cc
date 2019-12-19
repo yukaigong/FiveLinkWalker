@@ -1,6 +1,6 @@
 /*
  * Automatically Generated from Mathematica.
- * Wed 18 Dec 2019 22:18:16 GMT-05:00
+ * Thu 19 Dec 2019 02:11:56 GMT-05:00
  */
 
 #ifdef MATLAB_MEX_FILE
@@ -48,73 +48,73 @@ inline double Csc(double x) { return 1/sin(x); }
  */
 static void output1(double *p_output1,const double *var1)
 {
-  double t3;
-  double t7;
-  double t8;
-  double t9;
-  double t10;
-  double t11;
-  double t12;
-  double t16;
-  double t20;
-  double t21;
-  double t22;
-  double t23;
-  double t31;
-  double t32;
-  double t33;
-  double t34;
-  double t35;
-  double t39;
-  double t43;
-  double t44;
-  double t45;
-  double t46;
-  double t17;
-  double t18;
-  double t63;
-  double t64;
-  double t65;
-  double t40;
-  double t41;
-  double t77;
-  double t78;
-  double t79;
-  t3 = Sin(var1[2]);
-  t7 = Cos(var1[3]);
-  t8 = t7*t3;
-  t9 = Cos(var1[2]);
-  t10 = Sin(var1[3]);
-  t11 = t9*t10;
-  t12 = t8 + t11;
-  t16 = Cos(var1[4]);
-  t20 = t9*t7;
-  t21 = -1.*t3*t10;
-  t22 = t20 + t21;
-  t23 = Sin(var1[4]);
-  t31 = Cos(var1[5]);
-  t32 = t31*t3;
-  t33 = Sin(var1[5]);
-  t34 = t9*t33;
-  t35 = t32 + t34;
-  t39 = Cos(var1[6]);
-  t43 = t9*t31;
-  t44 = -1.*t3*t33;
-  t45 = t43 + t44;
-  t46 = Sin(var1[6]);
-  t17 = -1.*t16;
-  t18 = 1. + t17;
-  t63 = -1.*t7*t3;
-  t64 = -1.*t9*t10;
-  t65 = t63 + t64;
-  t40 = -1.*t39;
-  t41 = 1. + t40;
-  t77 = -1.*t31*t3;
-  t78 = -1.*t9*t33;
-  t79 = t77 + t78;
-  p_output1[0]=0.03125*(6.8*(-0.11*t12 + var1[0]) + 3.2*(-0.4*t12*t18 + 0.4*t22*t23 - 0.64*(t12*t16 + t22*t23) + var1[0]) + 12.*(0.24*t3 + var1[0]) + 6.8*(-0.11*t35 + var1[0]) + 3.2*(-0.4*t35*t41 + 0.4*t45*t46 - 0.64*(t35*t39 + t45*t46) + var1[0]));
+  double t1296;
+  double t1342;
+  double t1343;
+  double t1344;
+  double t1345;
+  double t1346;
+  double t1347;
+  double t1351;
+  double t1355;
+  double t1356;
+  double t1357;
+  double t1358;
+  double t1366;
+  double t1367;
+  double t1368;
+  double t1369;
+  double t1370;
+  double t1374;
+  double t1378;
+  double t1379;
+  double t1380;
+  double t1381;
+  double t1352;
+  double t1353;
+  double t1398;
+  double t1399;
+  double t1400;
+  double t1375;
+  double t1376;
+  double t1412;
+  double t1413;
+  double t1414;
+  t1296 = Sin(var1[2]);
+  t1342 = Cos(var1[3]);
+  t1343 = t1342*t1296;
+  t1344 = Cos(var1[2]);
+  t1345 = Sin(var1[3]);
+  t1346 = t1344*t1345;
+  t1347 = t1343 + t1346;
+  t1351 = Cos(var1[4]);
+  t1355 = t1344*t1342;
+  t1356 = -1.*t1296*t1345;
+  t1357 = t1355 + t1356;
+  t1358 = Sin(var1[4]);
+  t1366 = Cos(var1[5]);
+  t1367 = t1366*t1296;
+  t1368 = Sin(var1[5]);
+  t1369 = t1344*t1368;
+  t1370 = t1367 + t1369;
+  t1374 = Cos(var1[6]);
+  t1378 = t1344*t1366;
+  t1379 = -1.*t1296*t1368;
+  t1380 = t1378 + t1379;
+  t1381 = Sin(var1[6]);
+  t1352 = -1.*t1351;
+  t1353 = 1. + t1352;
+  t1398 = -1.*t1342*t1296;
+  t1399 = -1.*t1344*t1345;
+  t1400 = t1398 + t1399;
+  t1375 = -1.*t1374;
+  t1376 = 1. + t1375;
+  t1412 = -1.*t1366*t1296;
+  t1413 = -1.*t1344*t1368;
+  t1414 = t1412 + t1413;
+  p_output1[0]=0.03125*(12.*(0.24*t1296 + var1[0]) + 6.8*(-0.11*t1347 + var1[0]) + 3.2*(-0.4*t1347*t1353 + 0.4*t1357*t1358 - 0.64*(t1347*t1351 + t1357*t1358) + var1[0]) + 6.8*(-0.11*t1370 + var1[0]) + 3.2*(-0.4*t1370*t1376 + 0.4*t1380*t1381 - 0.64*(t1370*t1374 + t1380*t1381) + var1[0]));
   p_output1[1]=0;
-  p_output1[2]=0.03125*(6.8*(-0.11*t22 + var1[1]) + 6.8*(-0.11*t45 + var1[1]) + 3.2*(-0.4*t18*t22 + 0.4*t23*t65 - 0.64*(t16*t22 + t23*t65) + var1[1]) + 3.2*(-0.4*t41*t45 + 0.4*t46*t79 - 0.64*(t39*t45 + t46*t79) + var1[1]) + 12.*(0.24*t9 + var1[1]));
+  p_output1[2]=0.03125*(12.*(0.24*t1344 + var1[1]) + 6.8*(-0.11*t1357 + var1[1]) + 6.8*(-0.11*t1380 + var1[1]) + 3.2*(-0.4*t1353*t1357 + 0.4*t1358*t1400 - 0.64*(t1351*t1357 + t1358*t1400) + var1[1]) + 3.2*(-0.4*t1376*t1380 + 0.4*t1381*t1414 - 0.64*(t1374*t1380 + t1381*t1414) + var1[1]));
 }
 
 
@@ -160,7 +160,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
 
    
   /*  Create matrices for return arguments.  */
-  plhs[0] = mxCreateDoubleMatrix((mwSize) 1, (mwSize) 3, mxREAL);
+  plhs[0] = mxCreateDoubleMatrix((mwSize) 3, (mwSize) 1, mxREAL);
   p_output1 = mxGetPr(plhs[0]);
 
 

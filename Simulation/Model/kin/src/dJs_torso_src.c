@@ -1,12 +1,12 @@
 /*
  * Automatically Generated from Mathematica.
- * Wed 18 Dec 2019 16:25:10 GMT-05:00
+ * Wed 18 Dec 2019 23:16:30 GMT-05:00
  */
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
-#include "dJs_torso_src.h"
+#include "dJs_Torso_src.h"
 
 #ifdef _MSC_VER
   #define INLINE __forceinline /* use __forceinline (VC++ specific) */
@@ -101,7 +101,7 @@ static void output1(double *p_output1,const double *var1,const double *var2)
 
 
 
-void dJs_torso_src(double *p_output1, const double *var1,const double *var2)
+void dJs_Torso_src(double *p_output1, const double *var1,const double *var2)
 {
   // Call Subroutines
   output1(p_output1, var1, var2);

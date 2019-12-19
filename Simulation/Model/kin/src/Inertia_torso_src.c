@@ -1,12 +1,12 @@
 /*
  * Automatically Generated from Mathematica.
- * Wed 18 Dec 2019 16:25:16 GMT-05:00
+ * Wed 18 Dec 2019 23:16:37 GMT-05:00
  */
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
-#include "Inertia_torso_src.h"
+#include "Inertia_Torso_src.h"
 
 #ifdef _MSC_VER
   #define INLINE __forceinline /* use __forceinline (VC++ specific) */
@@ -68,7 +68,7 @@ static void output1(double *p_output1,const double *var1)
 
 
 
-void Inertia_torso_src(double *p_output1, const double *var1)
+void Inertia_Torso_src(double *p_output1, const double *var1)
 {
   // Call Subroutines
   output1(p_output1, var1);

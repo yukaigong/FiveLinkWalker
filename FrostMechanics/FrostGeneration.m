@@ -50,12 +50,12 @@ GenKinForFrame( FLW.ContactPoints.RightToe, '', PATH_kin,TEMPLATE_PATH,X,dX)
 % end
 
 %% COM
-p_COM= FLW.getComPosition();
-Jp_COM = jacobian(p_COM,X)*dX;
+p_COM= FLW.getComPosition()';
+Jp_COM = jacobian(p_COM,X);
 dJp_COM = MatrixTimeDerivative(Jp_COM,X,dX);
 
-export_simulation(p_COM,'p_COM',PATH_kin, X, TEMPLATE_PATH);
-export_simulation(Jp_COM,'Jp_COM',PATH_kin, {X,dX}, TEMPLATE_PATH);
+export_simulation(p_COM,'p_COM',PATH_kin, {X}, TEMPLATE_PATH);
+export_simulation(Jp_COM,'Jp_COM',PATH_kin, {X}, TEMPLATE_PATH);
 export_simulation(dJp_COM,'dJp_COM',PATH_kin, {X,dX}, TEMPLATE_PATH);
 %% Generate Dynamics
 FLW.configureDynamics();

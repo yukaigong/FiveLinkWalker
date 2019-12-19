@@ -1,12 +1,12 @@
 /*
  * Automatically Generated from Mathematica.
- * Wed 18 Dec 2019 16:25:15 GMT-05:00
+ * Wed 18 Dec 2019 23:16:35 GMT-05:00
  */
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
-#include "dR_torso_src.h"
+#include "dR_Torso_src.h"
 
 #ifdef _MSC_VER
   #define INLINE __forceinline /* use __forceinline (VC++ specific) */
@@ -53,26 +53,26 @@ INLINE double Tanh(double x) { return tanh(x); }
  */
 static void output1(double *p_output1,const double *var1,const double *var2)
 {
-  double t3794;
-  double t3792;
-  double t3793;
-  t3794 = Cos(var1[2]);
-  t3792 = Sin(var1[2]);
-  t3793 = -1.*var2[2]*t3792;
-  p_output1[0]=t3793;
+  double t652;
+  double t649;
+  double t651;
+  t652 = Cos(var1[2]);
+  t649 = Sin(var1[2]);
+  t651 = -1.*var2[2]*t649;
+  p_output1[0]=t651;
   p_output1[1]=0;
-  p_output1[2]=-1.*t3794*var2[2];
+  p_output1[2]=-1.*t652*var2[2];
   p_output1[3]=0;
   p_output1[4]=0;
   p_output1[5]=0;
-  p_output1[6]=t3794*var2[2];
+  p_output1[6]=t652*var2[2];
   p_output1[7]=0;
-  p_output1[8]=t3793;
+  p_output1[8]=t651;
 }
 
 
 
-void dR_torso_src(double *p_output1, const double *var1,const double *var2)
+void dR_Torso_src(double *p_output1, const double *var1,const double *var2)
 {
   // Call Subroutines
   output1(p_output1, var1, var2);

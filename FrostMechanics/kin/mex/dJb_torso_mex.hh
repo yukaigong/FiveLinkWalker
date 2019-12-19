@@ -1,6 +1,6 @@
 /*
  * Automatically Generated from Mathematica.
- * Wed 18 Dec 2019 16:25:06 GMT-05:00
+ * Wed 18 Dec 2019 23:16:25 GMT-05:00
  */
 
 #ifndef DJB_TORSO_MEX_HH
@@ -17,9 +17,9 @@
 namespace SymExpression
 {
 
-  void dJb_torso_mex_raw(double *p_output1, const double *var1,const double *var2);
+  void dJb_Torso_mex_raw(double *p_output1, const double *var1,const double *var2);
 
-  inline void dJb_torso_mex(Eigen::MatrixXd &p_output1, const Eigen::VectorXd &var1,const Eigen::VectorXd &var2)
+  inline void dJb_Torso_mex(Eigen::MatrixXd &p_output1, const Eigen::VectorXd &var1,const Eigen::VectorXd &var2)
   {
     // Check
     // - Inputs
@@ -36,7 +36,7 @@ namespace SymExpression
 
 
     // Call Subroutine with raw data
-    dJb_torso_mex_raw(p_output1.data(), var1.data(),var2.data());
+    dJb_Torso_mex_raw(p_output1.data(), var1.data(),var2.data());
     }
   
   

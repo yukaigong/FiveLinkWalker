@@ -1,13 +1,13 @@
-function [output1] = p_torso(var1)
+function [output1] = p_Torso(var1)
     if coder.target('MATLAB')
-        [output1] = p_torso_mex(var1);
+        [output1] = p_Torso_mex(var1);
     else
-        coder.cinclude('p_torso_src.h');
+        coder.cinclude('p_Torso_src.h');
         
         output1 = zeros(3, 1);
 
         
-        coder.ceval('p_torso_src' ...
+        coder.ceval('p_Torso_src' ...
             ,coder.wref(output1) ...
             ,coder.rref(var1) );
     end

@@ -4,7 +4,7 @@ function [output1] = p_COM(var1)
     else
         coder.cinclude('p_COM_src.h');
         
-        output1 = zeros(1, 3);
+        output1 = zeros(3, 1);
 
         
         coder.ceval('p_COM_src' ...

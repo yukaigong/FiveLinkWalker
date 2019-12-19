@@ -1,5 +1,5 @@
 <robot name="five_link_walker" xmlns:xacro="http://ros.org/wiki/xacro">
-  <link name="torso">
+  <link name="Torso">
     <inertial>
       <origin xyz="0 0 0.24" rpy="0 0 0"/>
       <mass value="12"/>
@@ -38,7 +38,7 @@
    <joint name="LeftHip" type="continuous">
     <origin xyz="0 0 0" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
-    <parent link="torso"/>
+    <parent link="Torso"/>
     <child link="LeftThigh"/>
   </joint>
   <joint name="LeftKnee" type="continuous">
@@ -50,7 +50,7 @@
   <joint name="RightHip" type="continuous">
     <origin xyz="0 0 0" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
-    <parent link="torso"/>
+    <parent link="Torso"/>
     <child link="RightThigh"/>
   </joint>
    <joint name="RightKnee" type="continuous">

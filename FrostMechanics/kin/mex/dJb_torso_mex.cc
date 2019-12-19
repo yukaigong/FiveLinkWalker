@@ -1,6 +1,6 @@
 /*
  * Automatically Generated from Mathematica.
- * Wed 18 Dec 2019 16:25:06 GMT-05:00
+ * Wed 18 Dec 2019 23:16:25 GMT-05:00
  */
 
 #ifdef MATLAB_MEX_FILE
@@ -48,21 +48,21 @@ inline double Csc(double x) { return 1/sin(x); }
  */
 static void output1(double *p_output1,const double *var1,const double *var2)
 {
-  double t3753;
-  double t3743;
-  double t3744;
-  t3753 = Cos(var1[2]);
-  t3743 = Sin(var1[2]);
-  t3744 = -1.*var2[2]*t3743;
-  p_output1[0]=t3744;
+  double t532;
+  double t508;
+  double t509;
+  t532 = Cos(var1[2]);
+  t508 = Sin(var1[2]);
+  t509 = -1.*var2[2]*t508;
+  p_output1[0]=t509;
   p_output1[1]=0;
-  p_output1[2]=t3753*var2[2];
+  p_output1[2]=t532*var2[2];
   p_output1[3]=0;
   p_output1[4]=0;
   p_output1[5]=0;
-  p_output1[6]=-1.*t3753*var2[2];
+  p_output1[6]=-1.*t532*var2[2];
   p_output1[7]=0;
-  p_output1[8]=t3744;
+  p_output1[8]=t509;
   p_output1[9]=0;
   p_output1[10]=0;
   p_output1[11]=0;
@@ -162,12 +162,12 @@ void mexFunction( int nlhs, mxArray *plhs[],
 
 #else // MATLAB_MEX_FILE
 
-#include "dJb_torso_mex.hh"
+#include "dJb_Torso_mex.hh"
 
 namespace SymExpression
 {
 
-void dJb_torso_mex_raw(double *p_output1, const double *var1,const double *var2)
+void dJb_Torso_mex_raw(double *p_output1, const double *var1,const double *var2)
 {
   // Call Subroutines
   output1(p_output1, var1, var2);

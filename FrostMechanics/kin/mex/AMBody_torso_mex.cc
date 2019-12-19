@@ -1,6 +1,6 @@
 /*
  * Automatically Generated from Mathematica.
- * Wed 18 Dec 2019 16:25:17 GMT-05:00
+ * Wed 18 Dec 2019 23:16:37 GMT-05:00
  */
 
 #ifdef MATLAB_MEX_FILE
@@ -119,12 +119,12 @@ void mexFunction( int nlhs, mxArray *plhs[],
 
 #else // MATLAB_MEX_FILE
 
-#include "AMBody_torso_mex.hh"
+#include "AMBody_Torso_mex.hh"
 
 namespace SymExpression
 {
 
-void AMBody_torso_mex_raw(double *p_output1, const double *var1,const double *var2)
+void AMBody_Torso_mex_raw(double *p_output1, const double *var1,const double *var2)
 {
   // Call Subroutines
   output1(p_output1, var1, var2);
