@@ -1,6 +1,6 @@
 /*
  * Automatically Generated from Mathematica.
- * Wed 18 Dec 2019 16:26:01 GMT-05:00
+ * Thu 19 Dec 2019 16:00:55 GMT-05:00
  */
 
 #ifndef JB_RIGHTTHIGH_MEX_HH

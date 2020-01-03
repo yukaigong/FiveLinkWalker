@@ -74,8 +74,8 @@ classdef FLW_Controller <matlab.System & matlab.system.mixin.Propagates & matlab
             L_RightToe_vg = obj.total_mass*cross(rp_RT,v_com);
             
             
-%             LBf = 32*(q(2)*dq(1))+LG(2);
-            LBf = 32*(q(2)*dq(1));
+            LBf = 32*(q(2)*dq(1))+LG(2);
+%             LBf = 32*(q(2)*dq(1));
             dx0 = LBf/(32*q(2));
             l = sqrt(g/q(2));
             x0 = (2*D - dx0/l*(exp(T*l)-exp(-T*l)))/...

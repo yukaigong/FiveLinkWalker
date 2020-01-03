@@ -42,12 +42,21 @@ export_simulation(dR,['dR_' func_name],EXPO_PATH, {X,dX}, TEMPLATE_PATH);
 if isprop(frame,'Inertia')
     twist_body = Jb*dX;
     w_body =  (tomatrix(twist_body(4:6)));
-    AM_body = frame.Inertia*w_body;
-    AM_world = T(1:3,1:3)*AM_body;
+    AMbody = frame.Inertia*w_body;
+    AMworld = T(1:3,1:3)*AMbody;
+    
+    Jq_AMbody = jacobian(AMbody,X);
+    Jdq_AMbody = jacobian(AMbody,dX);
+    Jq_AMworld = jacobian(AMworld,X);
+    Jdq_AMworld = jacobian(AMworld,dX);
     
     export_simulation(SymExpression(frame.Inertia),['Inertia_' func_name],EXPO_PATH, {X}, TEMPLATE_PATH);
-    export_simulation(AM_body,['AMBody_' func_name],EXPO_PATH, {X,dX}, TEMPLATE_PATH);
-    export_simulation(AM_world,['AMWorld_' func_name],EXPO_PATH, {X,dX}, TEMPLATE_PATH);
+    export_simulation(AMbody,['AMBody_' func_name],EXPO_PATH, {X,dX}, TEMPLATE_PATH);
+    export_simulation(Jq_AMbody,['Jq_AMBody_' func_name],EXPO_PATH, {X,dX}, TEMPLATE_PATH);
+    export_simulation(Jdq_AMbody,['Jdq_AMBody_' func_name],EXPO_PATH, {X,dX}, TEMPLATE_PATH);
+    export_simulation(AMworld,['AMWorld_' func_name],EXPO_PATH, {X,dX}, TEMPLATE_PATH);
+    export_simulation(Jq_AMworld,['Jq_AMWorld_' func_name],EXPO_PATH, {X,dX}, TEMPLATE_PATH);
+    export_simulation(Jdq_AMworld,['Jdq_AMWorld_' func_name],EXPO_PATH, {X,dX}, TEMPLATE_PATH);
 end
 
 end

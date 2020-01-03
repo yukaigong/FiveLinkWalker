@@ -1,6 +1,6 @@
 /*
  * Automatically Generated from Mathematica.
- * Wed 18 Dec 2019 16:26:24 GMT-05:00
+ * Thu 19 Dec 2019 16:01:23 GMT-05:00
  */
 
 #ifndef DJB_RIGHTSHIN_SRC_HH
