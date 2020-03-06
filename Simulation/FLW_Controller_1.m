@@ -1,6 +1,6 @@
 %Yukai controller.
 
-classdef FLW_Controller <matlab.System & matlab.system.mixin.Propagates & matlab.system.mixin.SampleTime %#codegen
+classdef FLW_Controller_1 <matlab.System & matlab.system.mixin.Propagates & matlab.system.mixin.SampleTime %#codegen
     % PROTECTED PROPERTIES ====================================================
     properties(Access = private)
        stanceLeg = -1;
@@ -18,6 +18,7 @@ classdef FLW_Controller <matlab.System & matlab.system.mixin.Propagates & matlab
             % Let the output be torso angle, com height and delta x,delta z of swing
             % feet and com. delta = p_com - p_swfeet.
             T = 0.3; % walking period
+            D = 0.2; % Desired COM Distance per step
             Kd = 50;
             Kp = 400;
             g=9.81;
@@ -64,7 +65,7 @@ classdef FLW_Controller <matlab.System & matlab.system.mixin.Propagates & matlab
             dJrp_RT = dJp_COM(q,dq)-dJp_RightToe(q,dq);
             
 
-            D = 0.2; % Desired Distance per step
+            
             p_com = p_COM(q);
             v_com = Jp_COM(q)*dq;
             LG = getFLWAngularMomentum(p_com,x);
@@ -79,7 +80,7 @@ classdef FLW_Controller <matlab.System & matlab.system.mixin.Propagates & matlab
             dx0 = LBf/(32*q(2));
             l = sqrt(g/q(2));
             x0 = (2*D - dx0/l*(exp(T*l)-exp(-T*l)))/...
-                (exp(T*l)+exp(-T*l) - 2);
+                (exp(T*l)+exp(-T*l) - 2); % x0 is the desired relative position of COM to swing foot in the beginning of next step, so that COM can travel distance D in time T
             
             
 
@@ -149,14 +150,26 @@ classdef FLW_Controller <matlab.System & matlab.system.mixin.Propagates & matlab
 %             u = 10*ones(4,1)*sin(t);
             %% Data assignment
             Data.stanceLeg = obj.stanceLeg;
-            Data.LG = LG(2);
-            Data.L_LeftToe = L_LeftToe(2);
-            Data.L_RightToe = L_RightToe(2);
-            Data.L_LeftToe_vg = L_LeftToe_vg(2);
-            Data.L_RightToe_vg = L_RightToe_vg(2);
+            Data.lG = LG(2);
+            Data.l_LeftToe = L_LeftToe(2);
+            Data.l_RightToe = L_RightToe(2);
+            Data.l_LeftToe_vg = L_LeftToe_vg(2);
+            Data.l_RightToe_vg = L_RightToe_vg(2);
+            
+            Data.hr = hr;
+            Data.dhr = dhr;
             
             Data.p_com = p_com;
             Data.v_com = v_com;
+            Data.vx_com = v_com(1);
+            Data.vy_com = v_com(2);
+            Data.vz_com = v_com(3);
+            Data.px_com = p_com(1);
+            Data.py_com = p_com(2);
+            Data.pz_com = p_com(3);
+            Data.q = q;
+            Data.dq = dq;
+            Data.u = u;
         end % stepImpl
 
         %% Default functions
@@ -170,7 +183,7 @@ classdef FLW_Controller <matlab.System & matlab.system.mixin.Propagates & matlab
         
         function [name_1, name_2, name_3]  = getInputNamesImpl(~)
             %GETINPUTNAMESIMPL Return input port names for System block
-            name_1 = 'tx';
+            name_1 = 'x';
             name_2 = 't';
             name_3 = 'GRF';
         end % getInputNamesImpl

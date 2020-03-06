@@ -1279,7 +1279,6 @@ classdef FG_Controller <matlab.System & matlab.system.mixin.Propagates & matlab.
                 Data.dqsL = dqsL;
             end
             % Return the updated Cassie inputs data structure
-            
         end % stepImpl
         %% util functions
         

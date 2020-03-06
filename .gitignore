@@ -1,5 +1,6 @@
 **/slprj/*
-
+*.asv
+*.mexw64
 
 *_grt_rtw/
 *slprj/

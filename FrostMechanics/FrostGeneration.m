@@ -15,7 +15,7 @@ FROST_PATH = 'D:\Graduate\robots\SomePackage\frost-dev';
 addpath(FROST_PATH)
 frost_addpath;
 
-%% Create 3-link leg model
+%% Create 5 link odel
 
 FLW = FLW_GenModel('five_link_walker.urdf')
 
