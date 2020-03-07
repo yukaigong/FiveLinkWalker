@@ -1,6 +1,6 @@
 /*
  * Automatically Generated from Mathematica.
- * Wed 18 Dec 2019 16:26:11 GMT-05:00
+ * Thu 19 Dec 2019 16:01:05 GMT-05:00
  */
 
 #ifdef MATLAB_MEX_FILE
@@ -48,47 +48,47 @@ inline double Csc(double x) { return 1/sin(x); }
  */
 static void output1(double *p_output1,const double *var1,const double *var2)
 {
-  double t4734;
-  double t4735;
-  double t4736;
-  double t4737;
-  double t4738;
-  double t4739;
-  double t4740;
-  double t4744;
-  double t4745;
-  double t4746;
-  double t4750;
-  double t4751;
-  double t4752;
-  double t4741;
-  double t4742;
-  double t4743;
-  t4734 = Cos(var1[5]);
-  t4735 = Sin(var1[2]);
-  t4736 = -1.*t4734*t4735;
-  t4737 = Cos(var1[2]);
-  t4738 = Sin(var1[5]);
-  t4739 = -1.*t4737*t4738;
-  t4740 = t4736 + t4739;
-  t4744 = -1.*t4737*t4734;
-  t4745 = t4735*t4738;
-  t4746 = t4744 + t4745;
-  t4750 = t4737*t4734;
-  t4751 = -1.*t4735*t4738;
-  t4752 = t4750 + t4751;
-  t4741 = var2[2]*t4740;
-  t4742 = var2[5]*t4740;
-  t4743 = t4741 + t4742;
-  p_output1[0]=t4743;
+  double t2152;
+  double t2153;
+  double t2154;
+  double t2155;
+  double t2156;
+  double t2157;
+  double t2158;
+  double t2162;
+  double t2163;
+  double t2164;
+  double t2168;
+  double t2169;
+  double t2170;
+  double t2159;
+  double t2160;
+  double t2161;
+  t2152 = Cos(var1[5]);
+  t2153 = Sin(var1[2]);
+  t2154 = -1.*t2152*t2153;
+  t2155 = Cos(var1[2]);
+  t2156 = Sin(var1[5]);
+  t2157 = -1.*t2155*t2156;
+  t2158 = t2154 + t2157;
+  t2162 = -1.*t2155*t2152;
+  t2163 = t2153*t2156;
+  t2164 = t2162 + t2163;
+  t2168 = t2155*t2152;
+  t2169 = -1.*t2153*t2156;
+  t2170 = t2168 + t2169;
+  t2159 = var2[2]*t2158;
+  t2160 = var2[5]*t2158;
+  t2161 = t2159 + t2160;
+  p_output1[0]=t2161;
   p_output1[1]=0;
-  p_output1[2]=t4746*var2[2] + t4746*var2[5];
+  p_output1[2]=t2164*var2[2] + t2164*var2[5];
   p_output1[3]=0;
   p_output1[4]=0;
   p_output1[5]=0;
-  p_output1[6]=t4752*var2[2] + t4752*var2[5];
+  p_output1[6]=t2170*var2[2] + t2170*var2[5];
   p_output1[7]=0;
-  p_output1[8]=t4743;
+  p_output1[8]=t2161;
 }
 
 

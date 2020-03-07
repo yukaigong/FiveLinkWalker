@@ -1,6 +1,6 @@
 /*
  * Automatically Generated from Mathematica.
- * Wed 18 Dec 2019 16:25:26 GMT-05:00
+ * Thu 19 Dec 2019 16:00:07 GMT-05:00
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -53,47 +53,47 @@ INLINE double Tanh(double x) { return tanh(x); }
  */
 static void output1(double *p_output1,const double *var1,const double *var2)
 {
-  double t3879;
-  double t3880;
-  double t3881;
-  double t3882;
-  double t3883;
-  double t3885;
-  double t3886;
-  double t3891;
-  double t3892;
-  double t3893;
-  double t3897;
-  double t3898;
-  double t3899;
-  double t3887;
-  double t3888;
-  double t3890;
-  t3879 = Cos(var1[3]);
-  t3880 = Sin(var1[2]);
-  t3881 = -1.*t3879*t3880;
-  t3882 = Cos(var1[2]);
-  t3883 = Sin(var1[3]);
-  t3885 = -1.*t3882*t3883;
-  t3886 = t3881 + t3885;
-  t3891 = t3882*t3879;
-  t3892 = -1.*t3880*t3883;
-  t3893 = t3891 + t3892;
-  t3897 = -1.*t3882*t3879;
-  t3898 = t3880*t3883;
-  t3899 = t3897 + t3898;
-  t3887 = var2[2]*t3886;
-  t3888 = var2[3]*t3886;
-  t3890 = t3887 + t3888;
-  p_output1[0]=t3890;
+  double t1293;
+  double t1294;
+  double t1295;
+  double t1296;
+  double t1297;
+  double t1299;
+  double t1300;
+  double t1305;
+  double t1306;
+  double t1307;
+  double t1311;
+  double t1312;
+  double t1313;
+  double t1301;
+  double t1302;
+  double t1304;
+  t1293 = Cos(var1[3]);
+  t1294 = Sin(var1[2]);
+  t1295 = -1.*t1293*t1294;
+  t1296 = Cos(var1[2]);
+  t1297 = Sin(var1[3]);
+  t1299 = -1.*t1296*t1297;
+  t1300 = t1295 + t1299;
+  t1305 = t1296*t1293;
+  t1306 = -1.*t1294*t1297;
+  t1307 = t1305 + t1306;
+  t1311 = -1.*t1296*t1293;
+  t1312 = t1294*t1297;
+  t1313 = t1311 + t1312;
+  t1301 = var2[2]*t1300;
+  t1302 = var2[3]*t1300;
+  t1304 = t1301 + t1302;
+  p_output1[0]=t1304;
   p_output1[1]=0;
-  p_output1[2]=t3893*var2[2] + t3893*var2[3];
+  p_output1[2]=t1307*var2[2] + t1307*var2[3];
   p_output1[3]=0;
   p_output1[4]=0;
   p_output1[5]=0;
-  p_output1[6]=t3899*var2[2] + t3899*var2[3];
+  p_output1[6]=t1313*var2[2] + t1313*var2[3];
   p_output1[7]=0;
-  p_output1[8]=t3890;
+  p_output1[8]=t1304;
   p_output1[9]=0;
   p_output1[10]=0;
   p_output1[11]=0;

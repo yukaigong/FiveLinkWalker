@@ -1,6 +1,6 @@
 /*
  * Automatically Generated from Mathematica.
- * Wed 18 Dec 2019 16:25:38 GMT-05:00
+ * Thu 19 Dec 2019 16:00:25 GMT-05:00
  */
 
 #ifdef MATLAB_MEX_FILE
@@ -48,51 +48,51 @@ inline double Csc(double x) { return 1/sin(x); }
  */
 static void output1(double *p_output1,const double *var1)
 {
-  double t4019;
-  double t4016;
-  double t4017;
-  double t4020;
-  double t4008;
-  double t4018;
-  double t4021;
-  double t4022;
-  double t4024;
-  double t4025;
-  double t4026;
-  double t4027;
-  double t4009;
-  double t4010;
-  double t4014;
-  double t4015;
-  double t4028;
-  double t4029;
-  double t4037;
-  double t4038;
-  double t4039;
-  t4019 = Cos(var1[2]);
-  t4016 = Cos(var1[3]);
-  t4017 = Sin(var1[2]);
-  t4020 = Sin(var1[3]);
-  t4008 = Cos(var1[4]);
-  t4018 = t4016*t4017;
-  t4021 = t4019*t4020;
-  t4022 = t4018 + t4021;
-  t4024 = t4019*t4016;
-  t4025 = -1.*t4017*t4020;
-  t4026 = t4024 + t4025;
-  t4027 = Sin(var1[4]);
-  t4009 = -1.*t4008;
-  t4010 = 1. + t4009;
-  t4014 = -0.4*t4010;
-  t4015 = 0. + t4014;
-  t4028 = 0.4*t4027;
-  t4029 = 0. + t4028;
-  t4037 = -1.*t4016*t4017;
-  t4038 = -1.*t4019*t4020;
-  t4039 = t4037 + t4038;
-  p_output1[0]=0. + t4015*t4022 - 0.64*(t4008*t4022 + t4026*t4027) + t4026*t4029 + var1[0];
+  double t1433;
+  double t1430;
+  double t1431;
+  double t1434;
+  double t1422;
+  double t1432;
+  double t1435;
+  double t1436;
+  double t1438;
+  double t1439;
+  double t1440;
+  double t1441;
+  double t1423;
+  double t1424;
+  double t1428;
+  double t1429;
+  double t1442;
+  double t1443;
+  double t1451;
+  double t1452;
+  double t1453;
+  t1433 = Cos(var1[2]);
+  t1430 = Cos(var1[3]);
+  t1431 = Sin(var1[2]);
+  t1434 = Sin(var1[3]);
+  t1422 = Cos(var1[4]);
+  t1432 = t1430*t1431;
+  t1435 = t1433*t1434;
+  t1436 = t1432 + t1435;
+  t1438 = t1433*t1430;
+  t1439 = -1.*t1431*t1434;
+  t1440 = t1438 + t1439;
+  t1441 = Sin(var1[4]);
+  t1423 = -1.*t1422;
+  t1424 = 1. + t1423;
+  t1428 = -0.4*t1424;
+  t1429 = 0. + t1428;
+  t1442 = 0.4*t1441;
+  t1443 = 0. + t1442;
+  t1451 = -1.*t1430*t1431;
+  t1452 = -1.*t1433*t1434;
+  t1453 = t1451 + t1452;
+  p_output1[0]=0. + t1429*t1436 - 0.64*(t1422*t1436 + t1440*t1441) + t1440*t1443 + var1[0];
   p_output1[1]=0.;
-  p_output1[2]=0. + t4015*t4026 + t4029*t4039 - 0.64*(t4008*t4026 + t4027*t4039) + var1[1];
+  p_output1[2]=0. + t1429*t1440 + t1443*t1453 - 0.64*(t1422*t1440 + t1441*t1453) + var1[1];
 }
 
 
