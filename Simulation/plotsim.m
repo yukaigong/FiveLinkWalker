@@ -9,6 +9,7 @@ plot(10*Data.stanceLeg,'g--')
 hold off
 legend('L LeftToe','L G','L LeftToe vg')
 
+
 figure;
 plot(tout,X_states(:,8))
 hold on
@@ -60,5 +61,15 @@ hold off
 %% Control
 figure;
 plot(Data.hr)
+hold on
+plot(Data.h0)
+hold off
+
 figure;
 plot(Data.dhr)
+
+figure;
+plot(Data.dx0_next)
+hold on
+plot(Data.stanceLeg,'g--')
+hold off
