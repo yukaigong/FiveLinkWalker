@@ -73,3 +73,17 @@ plot(Data.dx0_next)
 hold on
 plot(Data.stanceLeg,'g--')
 hold off
+
+figure;
+plot(Data.x0_next)
+hold on
+plot(Data.stanceLeg,'g--')
+hold off
+
+figure;
+plot(Data.l_LeftToe)
+hold on
+plot(10*Data.stanceLeg,'g--')
+hold off
+legend('L LeftToe')
+

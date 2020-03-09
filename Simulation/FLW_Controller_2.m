@@ -20,7 +20,7 @@ classdef FLW_Controller_2 <matlab.System & matlab.system.mixin.Propagates & matl
             % Let the output be torso angle, com height and delta x,delta z of swing
             % feet and com. delta = p_com - p_swfeet.
             T = 0.4; % walking period
-            V = 0.2; % Desired velocity at the end of a step
+            V = 0.6; % Desired velocity at the end of a step
             Kd = 50;
             Kp = 400;
             g=9.81; 
@@ -66,6 +66,12 @@ classdef FLW_Controller_2 <matlab.System & matlab.system.mixin.Propagates & matl
             dJrp_RT = dJp_com - dJp_RT;
             rv_RT = v_com - v_RT;
             
+            LG = getFLWAngularMomentum(p_com,x);
+            L_LeftToe = getFLWAngularMomentum(p_LT,x);
+            L_RightToe = getFLWAngularMomentum(p_RT,x);
+            L_LeftToe_vg = obj.total_mass*cross(rp_LT,v_com);
+            L_RightToe_vg = obj.total_mass*cross(rp_RT,v_com);
+            
             
             if (GRF_sw_z >= 150 && s>0.5) || s>1.05
                 obj.stanceLeg = -obj.stanceLeg;
@@ -78,6 +84,7 @@ classdef FLW_Controller_2 <matlab.System & matlab.system.mixin.Propagates & matl
                     obj.rv_swT_ini = rv_LT;
                 end
             end
+            
             
             if obj.stanceLeg == -1
                 
@@ -100,6 +107,9 @@ classdef FLW_Controller_2 <matlab.System & matlab.system.mixin.Propagates & matl
                 Jrp_swT = Jrp_RT;
                 dJrp_swT = dJrp_RT;
                 rv_swT = rv_RT;
+                
+                L_stToe = L_LeftToe;
+                L_swToe = L_RightToe;
             else
                 p_stT = p_RT;
                 Jp_stT = Jp_RT;
@@ -120,23 +130,23 @@ classdef FLW_Controller_2 <matlab.System & matlab.system.mixin.Propagates & matl
                 Jrp_swT = Jrp_LT;
                 dJrp_swT = dJrp_LT;
                 rv_swT = rv_LT;
+                
+                L_stToe = L_RightToe;
+                L_swToe = L_LeftToe;
             end
             
 
             
-            LG = getFLWAngularMomentum(p_com,x);
-            L_LeftToe = getFLWAngularMomentum(p_LT,x);
-            L_RightToe = getFLWAngularMomentum(p_RT,x);
-            L_LeftToe_vg = obj.total_mass*cross(rp_LT,v_com);
-            L_RightToe_vg = obj.total_mass*cross(rp_RT,v_com);
+
             
             
             T_left = T - t;
             LBf = 32*(q(2)*dq(1))+LG(2);
 %             LBf = 32*(q(2)*dq(1));
-            dx0 = LBf/(32*q(2));
+            pseudo_com_v = L_stToe(2)/(32*q(2));
             l = sqrt(g/q(2));
-            dx0_next = rp_stT(1)*l*sinh(l*T_left) + rv_stT(1)*cosh(l*T_left);
+%             dx0_next = rp_stT(1)*l*sinh(l*T_left) + rv_stT(1)*cosh(l*T_left);
+            dx0_next = rp_stT(1)*l*sinh(l*T_left) + pseudo_com_v*cosh(l*T_left);
             x0_next = (V - dx0_next*cosh(l*T))/(l*sinh(l*T));
             % x0_next is the desired relative position of COM to stance foot swing foot in the beginning of next step,(at this step it is still swing foot) so that COM velocity can be V at time T
             
@@ -204,7 +214,7 @@ classdef FLW_Controller_2 <matlab.System & matlab.system.mixin.Propagates & matl
             Data.l_RightToe_vg = L_RightToe_vg(2);
             
             Data.dx0_next = dx0_next;
-            Data.x0 = x0_next;
+            Data.x0_next = x0_next;
             
             Data.hr = hr;
             Data.dhr = dhr;
