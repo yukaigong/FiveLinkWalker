@@ -19,8 +19,8 @@ classdef FLW_Controller_2 <matlab.System & matlab.system.mixin.Propagates & matl
             dq = x(8:14);
             % Let the output be torso angle, com height and delta x,delta z of swing
             % feet and com. delta = p_com - p_swfeet.
-            T = 0.4; % walking period
-            V = 0.6; % Desired velocity at the end of a step
+            T = 0.3; % walking period
+            V = 2; % Desired velocity at the end of a step
             Kd = 50;
             Kp = 400;
             g=9.81; 
@@ -73,7 +73,7 @@ classdef FLW_Controller_2 <matlab.System & matlab.system.mixin.Propagates & matl
             L_RightToe_vg = obj.total_mass*cross(rp_RT,v_com);
             
             
-            if (GRF_sw_z >= 150 && s>0.5) || s>1.05
+            if (GRF_sw_z >= 150 && s>0.5) || s>1.1
                 obj.stanceLeg = -obj.stanceLeg;
                 obj.t0 = t_total;
                 if obj.stanceLeg == -1
@@ -143,16 +143,18 @@ classdef FLW_Controller_2 <matlab.System & matlab.system.mixin.Propagates & matl
             T_left = T - t;
             LBf = 32*(q(2)*dq(1))+LG(2);
 %             LBf = 32*(q(2)*dq(1));
-            pseudo_com_v = L_stToe(2)/(32*q(2));
+            pseudo_com_vx = L_stToe(2)/(32*q(2));
             l = sqrt(g/q(2));
+            one_step_max_vel_gain = T*l*0.2;
 %             dx0_next = rp_stT(1)*l*sinh(l*T_left) + rv_stT(1)*cosh(l*T_left);
-            dx0_next = rp_stT(1)*l*sinh(l*T_left) + pseudo_com_v*cosh(l*T_left);
-            x0_next = (V - dx0_next*cosh(l*T))/(l*sinh(l*T));
+            dx0_next = rp_stT(1)*l*sinh(l*T_left) + pseudo_com_vx*cosh(l*T_left);
+            dxf_next_goal = median([dx0_next + one_step_max_vel_gain, dx0_next - one_step_max_vel_gain, V]);
+            x0_next = (dxf_next_goal - dx0_next*cosh(l*T))/(l*sinh(l*T));
             % x0_next is the desired relative position of COM to stance foot swing foot in the beginning of next step,(at this step it is still swing foot) so that COM velocity can be V at time T
             
             w = pi/T;
             H = 0.6;
-            CL = 0.2;
+            CL = 0.3;
             
             ref_rp_swT_x = 1/2*(obj.rp_swT_ini(1) - x0_next)*cos(w*t) + 1/2*(obj.rp_swT_ini(1) + x0_next);
             ref_rv_swT_x = 1/2*(obj.rp_swT_ini(1) - x0_next)*(-w*sin(w*t));
@@ -161,7 +163,7 @@ classdef FLW_Controller_2 <matlab.System & matlab.system.mixin.Propagates & matl
 %             ref_rp_swT_z = 1/2*CL*cos(2*w*t)+(H-1/2*CL);
 %             ref_rv_swT_z = 1/2*CL*(-2*w*sin(2*w*t));
 %             ref_ra_swT_z = 1/2*CL*(-4*w^2*cos(2*w*t));
-            ref_rp_swT_z= (s-0.5)^2+0.35;
+            ref_rp_swT_z= 4*CL*(s-0.5)^2+(H-CL);
             ref_rv_swT_z = 2*(s-0.5)*ds;
             ref_ra_swT_z = 2*ds^2;
 
@@ -229,6 +231,7 @@ classdef FLW_Controller_2 <matlab.System & matlab.system.mixin.Propagates & matl
             Data.px_com = p_com(1);
             Data.py_com = p_com(2);
             Data.pz_com = p_com(3);
+            Data.pseudo_com_vx = pseudo_com_vx;
             Data.q = q;
             Data.dq = dq;
             Data.u = u;

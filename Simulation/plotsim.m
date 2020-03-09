@@ -47,6 +47,13 @@ hold on
 plot(1*Data.stanceLeg,'g--')
 hold off
 legend('q1','q2','q3','q4','q5','q6','q7')
+
+figure;
+plot(Data.dq)
+hold on
+plot(1*Data.stanceLeg,'g--')
+hold off
+legend('dq1','dq2','dq3','dq4','dq5','dq6','dq7')
 %% Special
 
 % find the relation between lG ( Angular Momentum about COm), l_LeftToe (
@@ -63,6 +70,7 @@ figure;
 plot(Data.hr)
 hold on
 plot(Data.h0)
+plot(Data.stanceLeg,'g--')
 hold off
 
 figure;
@@ -87,3 +95,9 @@ plot(10*Data.stanceLeg,'g--')
 hold off
 legend('L LeftToe')
 
+figure;
+plot(Data.pseudo_com_vx)
+hold on
+plot(10*Data.stanceLeg,'g--')
+hold off
+legend('L LeftToe')

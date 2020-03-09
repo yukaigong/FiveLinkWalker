@@ -19,6 +19,7 @@ Data.vz_com = 0;
 Data.px_com = 0;
 Data.py_com = 0;
 Data.pz_com = 0;
+Data.pseudo_com_vx = 0;
 Data.q = zeros(7,1);
 Data.dq = zeros(7,1);
 Data.u = zeros(4,1);
