@@ -19,10 +19,10 @@ classdef FLW_Controller_2 <matlab.System & matlab.system.mixin.Propagates & matl
             dq = x(8:14);
             % Let the output be torso angle, com height and delta x,delta z of swing
             % feet and com. delta = p_com - p_swfeet.
-            T = 0.3; % walking period
-            V = 2; % Desired velocity at the end of a step
-            Kd = 50;
-            Kp = 400;
+            T = 0.15; % walking period
+            V = 6; % Desired velocity at the end of a step
+            Kd = 100;
+            Kp = 1000;
             g=9.81; 
             ds = 1/T;
             
@@ -154,7 +154,7 @@ classdef FLW_Controller_2 <matlab.System & matlab.system.mixin.Propagates & matl
             
             w = pi/T;
             H = 0.6;
-            CL = 0.3;
+            CL = 0.1;
             
             ref_rp_swT_x = 1/2*(obj.rp_swT_ini(1) - x0_next)*cos(w*t) + 1/2*(obj.rp_swT_ini(1) + x0_next);
             ref_rv_swT_x = 1/2*(obj.rp_swT_ini(1) - x0_next)*(-w*sin(w*t));
@@ -164,8 +164,8 @@ classdef FLW_Controller_2 <matlab.System & matlab.system.mixin.Propagates & matl
 %             ref_rv_swT_z = 1/2*CL*(-2*w*sin(2*w*t));
 %             ref_ra_swT_z = 1/2*CL*(-4*w^2*cos(2*w*t));
             ref_rp_swT_z= 4*CL*(s-0.5)^2+(H-CL);
-            ref_rv_swT_z = 2*(s-0.5)*ds;
-            ref_ra_swT_z = 2*ds^2;
+            ref_rv_swT_z = 8*CL*(s-0.5)*ds;
+            ref_ra_swT_z = 8*CL*ds^2;
 
 
             

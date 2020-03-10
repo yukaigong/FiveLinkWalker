@@ -75,6 +75,10 @@ hold off
 
 figure;
 plot(Data.dhr)
+hold on
+plot(Data.dh0)
+plot(Data.stanceLeg,'g--')
+hold off
 
 figure;
 plot(Data.dx0_next)
