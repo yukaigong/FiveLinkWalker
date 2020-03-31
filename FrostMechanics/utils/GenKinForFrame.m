@@ -44,7 +44,7 @@ if isprop(frame,'Inertia')
     w_body =  (tomatrix(twist_body(4:6)));
     AMbody = frame.Inertia*w_body;
     AMworld = T(1:3,1:3)*AMbody;
-    
+   
     Jq_AMbody = jacobian(AMbody,X);
     Jdq_AMbody = jacobian(AMbody,dX);
     Jq_AMworld = jacobian(AMworld,X);

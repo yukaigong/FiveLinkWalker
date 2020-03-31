@@ -10,6 +10,7 @@ Data.x0 = 0;
 
 Data.dx0_next = 0;
 Data.x0_next = 0;
+Data.dxf_next_goal = 0;
 
 Data.p_com = zeros(3,1);
 Data.v_com = zeros(3,1);

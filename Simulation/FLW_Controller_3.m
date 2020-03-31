@@ -1,6 +1,6 @@
 %Yukai controller.
 
-classdef FLW_Controller_2 <matlab.System & matlab.system.mixin.Propagates & matlab.system.mixin.SampleTime %#codegen
+classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matlab.system.mixin.SampleTime %#codegen
     % PROTECTED PROPERTIES ====================================================
     properties(Access = private)
        stanceLeg = -1;
@@ -20,9 +20,9 @@ classdef FLW_Controller_2 <matlab.System & matlab.system.mixin.Propagates & matl
             % Let the output be torso angle, com height and delta x,delta z of swing
             % feet and com. delta = p_com - p_swfeet.
             T = 0.3; % walking period
-            V = 1; % Desired velocity at the end of a step
-            Kd = 50;
-            Kp = 500;
+            V = 2; % Desired velocity at the end of a step
+            Kd = 100;
+            Kp = 1000;
             g=9.81; 
             ds = 1/T;
             
@@ -192,8 +192,8 @@ classdef FLW_Controller_2 <matlab.System & matlab.system.mixin.Propagates & matl
             h0 = [q(3);rp_stT(3);rp_swT([1,3])];
             dh0 = Jh*dq;
             
-            hr= [0;H;ref_rp_swT_x;ref_rp_swT_z];
-%             hr= [sqrt(dxf_next_goal)/5;H;ref_rp_swT_x;ref_rp_swT_z];
+%             hr= [0;0.6;ref_rp_swT_x;ref_rp_swT_z];
+            hr= [sqrt(dxf_next_goal)/5;0.6;ref_rp_swT_x;ref_rp_swT_z];
             dhr = [0;0;ref_rv_swT_x;ref_rv_swT_z];
             ddhr = [0;0;ref_ra_swT_x;ref_ra_swT_z];
             
@@ -208,7 +208,6 @@ classdef FLW_Controller_2 <matlab.System & matlab.system.mixin.Propagates & matl
             
             u = (Jh*S*Me^-1*Be)^-1*(-Kd*dy-Kp*y+ddhr+Jh*S*Me^-1*He);
 %             u = 10*ones(4,1)*sin(t);
-            
             %% Data assignment
             Data.stanceLeg = obj.stanceLeg;
             Data.lG = LG(2);
@@ -219,7 +218,6 @@ classdef FLW_Controller_2 <matlab.System & matlab.system.mixin.Propagates & matl
             
             Data.dx0_next = dx0_next;
             Data.x0_next = x0_next;
-            Data.dxf_next_goal = dxf_next_goal;
             
             Data.hr = hr;
             Data.dhr = dhr;
