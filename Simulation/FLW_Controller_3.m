@@ -8,6 +8,13 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
        total_mass = 32;
        rp_swT_ini = zeros(3,1);
        rv_swT_ini = zeros(3,1);
+       l_LeftToe_kf = 0;
+       l_RightToe_kf = 0;
+       T_sample = 0.0005;
+       sigma = 0;
+       l_stToe_kf = 0;
+       t_prev = 0;
+       t_test = 0;
     end % properties
     
     % PROTECTED METHODS =====================================================
@@ -20,9 +27,9 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
             % Let the output be torso angle, com height and delta x,delta z of swing
             % feet and com. delta = p_com - p_swfeet.
             T = 0.3; % walking period
-            V = 2; % Desired velocity at the end of a step
-            Kd = 100;
-            Kp = 1000;
+            V = 1; % Desired velocity at the end of a step
+            Kd = 50;
+            Kp = 500;
             g=9.81; 
             ds = 1/T;
             
@@ -72,6 +79,9 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
             L_LeftToe_vg = obj.total_mass*cross(rp_LT,v_com);
             L_RightToe_vg = obj.total_mass*cross(rp_RT,v_com);
             
+            L_LeftToe_obs = L_LeftToe;
+            L_RightToe_obs = L_RightToe;
+            
             
             if (GRF_sw_z >= 150 && s>0.5) || s>1.1
                 obj.stanceLeg = -obj.stanceLeg;
@@ -79,9 +89,13 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
                 if obj.stanceLeg == -1
                     obj.rp_swT_ini = rp_RT;
                     obj.rv_swT_ini = rv_RT;
+                    obj.l_stToe_kf = L_LeftToe_obs(2);
+                    obj.sigma = 2.28^2;
                 else
                     obj.rp_swT_ini = rp_LT;
                     obj.rv_swT_ini = rv_LT;
+                    obj.l_stToe_kf = L_RightToe_obs(2);
+                    obj.sigma = 2.28^2;
                 end
             end
             
@@ -110,6 +124,9 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
                 
                 L_stToe = L_LeftToe;
                 L_swToe = L_RightToe;
+                
+                L_stToe_obs = L_LeftToe_obs;
+                L_swToe_obs = L_RightToe_obs;
             else
                 p_stT = p_RT;
                 Jp_stT = Jp_RT;
@@ -133,11 +150,27 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
                 
                 L_stToe = L_RightToe;
                 L_swToe = L_LeftToe;
+                
+                L_stToe_obs = L_RightToe_obs;
+                L_swToe_obs = L_LeftToe_obs;
             end
             
 
+            % Kalman Filter for angular Momentum
+            At = 1;
+            Ct = 1;
+            Bt = 1;
+            Rt = Jrp_stT^cov_pos;
+            Qt = 1.5^2;
+            if obj.t_prev ~= t_total
+                l_stToe_bar = obj.l_stToe_kf + obj.T_sample*obj.total_mass*g*rp_stT(1);
+                sigma_bar = At*obj.sigma*At' + Rt;
+                Kt = sigma_bar*Ct'*(Ct*sigma_bar*Ct'+Qt)^-1;
+                obj.l_stToe_kf = l_stToe_bar + Kt*(L_stToe_obs(2)-Ct*l_stToe_bar);
+                obj.sigma = (1-Kt*Ct)*sigma_bar;
+            end
             
-
+            
             
             
             T_left = T - t;
@@ -192,8 +225,8 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
             h0 = [q(3);rp_stT(3);rp_swT([1,3])];
             dh0 = Jh*dq;
             
-%             hr= [0;0.6;ref_rp_swT_x;ref_rp_swT_z];
-            hr= [sqrt(dxf_next_goal)/5;0.6;ref_rp_swT_x;ref_rp_swT_z];
+            hr= [0;H;ref_rp_swT_x;ref_rp_swT_z];
+%             hr= [sqrt(dxf_next_goal)/5;H;ref_rp_swT_x;ref_rp_swT_z];
             dhr = [0;0;ref_rv_swT_x;ref_rv_swT_z];
             ddhr = [0;0;ref_ra_swT_x;ref_ra_swT_z];
             
@@ -208,7 +241,12 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
             
             u = (Jh*S*Me^-1*Be)^-1*(-Kd*dy-Kp*y+ddhr+Jh*S*Me^-1*He);
 %             u = 10*ones(4,1)*sin(t);
-            %% Data assignment
+            
+%%          
+            Data.t_diff = t_total - obj.t_prev;
+            obj.t_prev = t_total;
+            obj.t_test = obj.t_test + obj.T_sample;
+%% Data assignment
             Data.stanceLeg = obj.stanceLeg;
             Data.lG = LG(2);
             Data.l_LeftToe = L_LeftToe(2);
@@ -218,11 +256,18 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
             
             Data.dx0_next = dx0_next;
             Data.x0_next = x0_next;
+            Data.dxf_next_goal = dxf_next_goal;
             
             Data.hr = hr;
             Data.dhr = dhr;
             Data.h0 = h0;
             Data.dh0 = dh0;
+            
+            Data.l_stToe_kf = obj.l_stToe_kf;
+            Data.rp_LT = rp_LT;
+            
+            Data.t_test = obj.t_test;
+            
             
             Data.p_com = p_com;
             Data.v_com = v_com;
@@ -236,6 +281,8 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
             Data.q = q;
             Data.dq = dq;
             Data.u = u;
+            
+            
         end % stepImpl
 
         %% Default functions
