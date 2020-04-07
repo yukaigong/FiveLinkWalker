@@ -39,6 +39,7 @@ GenKinForFrame( FLW.ContactPoints.Head, '', PATH_kin,TEMPLATE_PATH,X,dX)
 GenKinForFrame( FLW.ContactPoints.LeftToe, '', PATH_kin,TEMPLATE_PATH,X,dX)
 GenKinForFrame( FLW.ContactPoints.RightToe, '', PATH_kin,TEMPLATE_PATH,X,dX)
 
+GetAngularMomentum_terms(FLW,PATH_kin,TEMPLATE_PATH,X,dX)
 % for i = 1:length(FLW.Links)
 %     Jb = FLW.Links(i).computeBodyJacobian(length(X));
 %     % Homogeneous Transformation
@@ -48,7 +49,7 @@ GenKinForFrame( FLW.ContactPoints.RightToe, '', PATH_kin,TEMPLATE_PATH,X,dX)
 %     AM_world = T(1:3,1:3)*AM_body;
 %     export_simulation(dR,['dR_' func_name],EXPO_PATH, {X,dX}, TEMPLATE_PATH);
 % end
-
+GetAngularMomentum_terms(FLW,PATH_kin,TEMPLATE_PATH,X,dX)
 %% COM
 p_COM= FLW.getComPosition()';
 Jp_COM = jacobian(p_COM,X);
