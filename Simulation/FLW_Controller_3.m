@@ -2,6 +2,10 @@
 
 classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matlab.system.mixin.SampleTime %#codegen
     % PROTECTED PROPERTIES ====================================================
+    properties
+        cov_q;
+        cov_dq;
+    end
     properties(Access = private)
        stanceLeg = -1;
        t0= 0;
@@ -32,6 +36,9 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
             Kp = 500;
             g=9.81; 
             ds = 1/T;
+            Cov_q = eye(7) * obj.cov_q;
+            Cov_dq = eye(7) * obj.cov_dq;
+            
             
 
             if obj.stanceLeg == -1
@@ -82,6 +89,23 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
             L_LeftToe_obs = L_LeftToe;
             L_RightToe_obs = L_RightToe;
             
+            % calculating covariance of 
+            Jq_LT = Jq_AMworld_about_pA(q,dq,p_LT,Jp_LT);
+            Jdq_LT = Jdq_AMworld_about_pA(q,dq,p_LT,zeros(3,7));
+            Cov_L_LT = Jq_LT*Cov_q*Jq_LT' + Jdq_LT*Cov_dq*Jdq_LT';
+            Cov_L_LTy = Cov_L_LT(2,2);
+            
+            Jq_RT = Jq_AMworld_about_pA(q,dq,p_RT,Jp_RT);
+            Jdq_RT = Jdq_AMworld_about_pA(q,dq,p_RT,zeros(3,7));
+            Cov_L_RT = Jq_RT*Cov_q*Jq_RT' + Jdq_RT*Cov_dq*Jdq_RT';
+            Cov_L_RTy = Cov_L_RT(2,2);
+            
+            Cov_rp_LT = Jp_LT*Cov_q*Jp_LT';
+            Cov_rp_LTx = Cov_rp_LT(1,1);
+            
+            Cov_rp_RT = Jp_RT*Cov_q*Jp_RT';
+            Cov_rp_RTx = Cov_rp_RT(1,1);
+            
             
             if (GRF_sw_z >= 150 && s>0.5) || s>1.1
                 obj.stanceLeg = -obj.stanceLeg;
@@ -90,12 +114,14 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
                     obj.rp_swT_ini = rp_RT;
                     obj.rv_swT_ini = rv_RT;
                     obj.l_stToe_kf = L_LeftToe_obs(2);
-                    obj.sigma = 2.28^2;
+%                     obj.sigma = 2.28^2;
+                    obj.sigma = Cov_L_LTy;
                 else
                     obj.rp_swT_ini = rp_LT;
                     obj.rv_swT_ini = rv_LT;
                     obj.l_stToe_kf = L_RightToe_obs(2);
-                    obj.sigma = 2.28^2;
+%                     obj.sigma = 2.28^2;
+                    obj.sigma = Cov_L_RTy;
                 end
             end
             
@@ -127,6 +153,13 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
                 
                 L_stToe_obs = L_LeftToe_obs;
                 L_swToe_obs = L_RightToe_obs;
+                
+                Cov_L_stTy = Cov_L_LTy;
+                Cov_L_swTy = Cov_L_RTy;
+                
+                Cov_rp_stTx = Cov_rp_LTx;
+                Cov_rp_swTx = Cov_rp_RTx;
+                
             else
                 p_stT = p_RT;
                 Jp_stT = Jp_RT;
@@ -153,15 +186,32 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
                 
                 L_stToe_obs = L_RightToe_obs;
                 L_swToe_obs = L_LeftToe_obs;
+                
+                Cov_L_stTy = Cov_L_RTy;
+                Cov_L_swTy = Cov_L_LTy;
+                
+                Cov_rp_stTx = Cov_rp_RTx;
+                Cov_rp_swTx = Cov_rp_LTx;
             end
             
 
             % Kalman Filter for angular Momentum
+            
+            
             At = 1;
             Ct = 1;
             Bt = 1;
-            Rt = Jrp_stT^cov_pos;
-            Qt = 1.5^2;
+%             Rt = Jrp_stT^cov_pos;
+%             Qt = 1.5^2;
+
+            
+
+            
+            
+            Rt = (obj.T_sample*obj.total_mass*g)^2*Cov_rp_stTx;
+            Qt = Cov_L_stTy;
+            
+            
             if obj.t_prev ~= t_total
                 l_stToe_bar = obj.l_stToe_kf + obj.T_sample*obj.total_mass*g*rp_stT(1);
                 sigma_bar = At*obj.sigma*At' + Rt;
@@ -253,6 +303,7 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
             Data.l_RightToe = L_RightToe(2);
             Data.l_LeftToe_vg = L_LeftToe_vg(2);
             Data.l_RightToe_vg = L_RightToe_vg(2);
+            Data.l_stToe = L_stToe(2);
             
             Data.dx0_next = dx0_next;
             Data.x0_next = x0_next;
@@ -265,9 +316,15 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
             
             Data.l_stToe_kf = obj.l_stToe_kf;
             Data.rp_LT = rp_LT;
+            Data.sigma = obj.sigma;
+            Data.std = sqrt(obj.sigma);
+            Data.Rt = Rt;
+            Data.Qt = Qt;
             
             Data.t_test = obj.t_test;
             
+            Data.p_LT = p_LT;
+            Data.p_RT = p_RT;
             
             Data.p_com = p_com;
             Data.v_com = v_com;

@@ -221,6 +221,8 @@ classdef FLW_Controller_2 <matlab.System & matlab.system.mixin.Propagates & matl
             Data.x0_next = x0_next;
             Data.dxf_next_goal = dxf_next_goal;
             
+            Data.rp_LT = rp_LT;
+            
             Data.hr = hr;
             Data.dhr = dhr;
             Data.h0 = h0;

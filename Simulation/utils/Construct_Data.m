@@ -6,6 +6,7 @@ Data.l_LeftToe = 0;
 Data.l_RightToe = 0;
 Data.l_LeftToe_vg = 0;
 Data.l_RightToe_vg = 0;
+Data.l_stToe = 0;
 Data.x0 = 0;
 
 Data.dx0_next = 0;
@@ -13,10 +14,17 @@ Data.x0_next = 0;
 Data.dxf_next_goal = 0;
 
 Data.l_stToe_kf = 0;
+Data.sigma = 0;
+Data.std = 0;
+Data.Rt = 0;
+Data.Qt = 0;
 Data.rp_LT = zeros(3,1);
 
 Data.t_test = 0;
 Data.t_diff = 0;
+
+Data.p_LT = zeros(3,1);
+Data.p_RT = zeros(3,1);
 
 Data.p_com = zeros(3,1);
 Data.v_com = zeros(3,1);

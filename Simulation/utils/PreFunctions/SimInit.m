@@ -40,3 +40,7 @@ IC = [base_xz;base_rot;q1L;q2L;q1R;q2R;...
     dbase_xz;dbase_rot;dq1L;dq2L;dq1R;dq2R];
 
 % IC(2) = 10;
+
+cov_q = 0.01;
+cov_q2 = cov_q;
+cov_dq = 0.00;
