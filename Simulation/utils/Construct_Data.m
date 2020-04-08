@@ -14,6 +14,7 @@ Data.x0_next = 0;
 Data.dxf_next_goal = 0;
 
 Data.l_stToe_kf = 0;
+Data.l_stToe_obs = 0;
 Data.sigma = 0;
 Data.std = 0;
 Data.Rt = 0;

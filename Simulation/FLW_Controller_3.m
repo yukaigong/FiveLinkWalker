@@ -5,6 +5,7 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
     properties
         cov_q;
         cov_dq;
+        T_sample;
     end
     properties(Access = private)
        stanceLeg = -1;
@@ -12,9 +13,10 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
        total_mass = 32;
        rp_swT_ini = zeros(3,1);
        rv_swT_ini = zeros(3,1);
+       rp_swT_ini_spe = zeros(3,1);
+       rv_swT_ini_spe = zeros(3,1);
        l_LeftToe_kf = 0;
        l_RightToe_kf = 0;
-       T_sample = 0.0005;
        sigma = 0;
        l_stToe_kf = 0;
        t_prev = 0;
@@ -24,10 +26,12 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
     % PROTECTED METHODS =====================================================
     methods (Access = protected)
         
-        function [u, Data] = stepImpl(obj,x,t_total,GRF)
+        function [u, Data] = stepImpl(obj,x,t_total,GRF,x_spe)
             Data = Construct_Data();
             q = x(1:7);
             dq = x(8:14);
+            q_spe = x_spe(1:7);
+            dq_spe = x_spe(8:14);
             % Let the output be torso angle, com height and delta x,delta z of swing
             % feet and com. delta = p_com - p_swfeet.
             T = 0.3; % walking period
@@ -38,6 +42,9 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
             ds = 1/T;
             Cov_q = eye(7) * obj.cov_q;
             Cov_dq = eye(7) * obj.cov_dq;
+%             Cov_dq = eye(7) * 0.05;
+            Cov_q_spe = Cov_q;
+            Cov_dq_spe = Cov_dq;
             
             
 
@@ -89,36 +96,71 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
             L_LeftToe_obs = L_LeftToe;
             L_RightToe_obs = L_RightToe;
             
+            
+            % special q
+            p_com_spe = p_COM(q_spe);
+            Jp_com_spe = Jp_COM(q_spe);
+            dJp_com_spe = dJp_COM(q_spe,dq_spe);
+            v_com_spe = Jp_com_spe*dq_spe;
+            
+            p_LT_spe = p_LeftToe(q_spe);
+            Jp_LT_spe = Jp_LeftToe(q_spe);
+            dJp_LT_spe = dJp_LeftToe(q_spe,dq_spe);
+            v_LT_spe = Jp_LT_spe*dq_spe;
+            
+            p_RT_spe = p_RightToe(q_spe);
+            Jp_RT_spe = Jp_RightToe(q_spe);
+            dJp_RT_spe = dJp_RightToe(q_spe,dq_spe);
+            v_RT_spe = Jp_RT_spe*dq_spe;
+            
+            rp_LT_spe = p_com_spe - p_LT_spe;
+            Jrp_LT_spe= Jp_com_spe - Jp_LT_spe;
+            dJrp_LT_spe = dJp_com_spe - dJp_LT_spe;
+            rv_LT_spe = v_com_spe - v_LT_spe;
+            
+            rp_RT_spe = p_com_spe - p_RT_spe;
+            Jrp_RT_spe = Jp_com_spe - Jp_RT_spe;
+            dJrp_RT_spe = dJp_com_spe - dJp_RT_spe;
+            rv_RT_spe = v_com_spe - v_RT_spe;
+            
+            
             % calculating covariance of 
-            Jq_LT = Jq_AMworld_about_pA(q,dq,p_LT,Jp_LT);
-            Jdq_LT = Jdq_AMworld_about_pA(q,dq,p_LT,zeros(3,7));
-            Cov_L_LT = Jq_LT*Cov_q*Jq_LT' + Jdq_LT*Cov_dq*Jdq_LT';
+            JL_q_LT = Jq_AMworld_about_pA(q,dq,p_LT,Jp_LT);
+            JL_dq_LT = Jdq_AMworld_about_pA(q,dq,p_LT,zeros(3,7));
+            Cov_L_LT = JL_q_LT*Cov_q*JL_q_LT' + JL_dq_LT*Cov_dq*JL_dq_LT';
             Cov_L_LTy = Cov_L_LT(2,2);
             
-            Jq_RT = Jq_AMworld_about_pA(q,dq,p_RT,Jp_RT);
-            Jdq_RT = Jdq_AMworld_about_pA(q,dq,p_RT,zeros(3,7));
-            Cov_L_RT = Jq_RT*Cov_q*Jq_RT' + Jdq_RT*Cov_dq*Jdq_RT';
+            JL_q_RT = Jq_AMworld_about_pA(q,dq,p_RT,Jp_RT);
+            JL_dq_RT = Jdq_AMworld_about_pA(q,dq,p_RT,zeros(3,7));
+            Cov_L_RT = JL_q_RT*Cov_q*JL_q_RT' + JL_dq_RT*Cov_dq*JL_dq_RT';
             Cov_L_RTy = Cov_L_RT(2,2);
             
-            Cov_rp_LT = Jp_LT*Cov_q*Jp_LT';
+            Cov_rp_LT = Jrp_LT*Cov_q*Jrp_LT';
             Cov_rp_LTx = Cov_rp_LT(1,1);
             
-            Cov_rp_RT = Jp_RT*Cov_q*Jp_RT';
+            Cov_rp_RT = Jrp_RT*Cov_q*Jrp_RT';
             Cov_rp_RTx = Cov_rp_RT(1,1);
+            
+            % special q
+            Cov_rp_LT_spe = Jp_LT_spe*Cov_q_spe*Jp_LT_spe';
+            Cov_rp_LTx_spe = Cov_rp_LT_spe(1,1);
+            
+            Cov_rp_RT_spe = Jp_RT_spe*Cov_q_spe*Jp_RT_spe';
+            Cov_rp_RTx_spe = Cov_rp_RT_spe(1,1);
             
             
             if (GRF_sw_z >= 150 && s>0.5) || s>1.1
                 obj.stanceLeg = -obj.stanceLeg;
                 obj.t0 = t_total;
                 if obj.stanceLeg == -1
-                    obj.rp_swT_ini = rp_RT;
-                    obj.rv_swT_ini = rv_RT;
+                    obj.rp_swT_ini_spe = rp_RT_spe;
+                    obj.rv_swT_ini_spe = rv_RT_spe;
                     obj.l_stToe_kf = L_LeftToe_obs(2);
 %                     obj.sigma = 2.28^2;
                     obj.sigma = Cov_L_LTy;
                 else
-                    obj.rp_swT_ini = rp_LT;
-                    obj.rv_swT_ini = rv_LT;
+                    obj.rp_swT_ini_spe = rp_LT_spe;
+                    obj.rv_swT_ini_spe = rv_LT_spe;
                     obj.l_stToe_kf = L_RightToe_obs(2);
 %                     obj.sigma = 2.28^2;
                     obj.sigma = Cov_L_RTy;
@@ -160,6 +202,10 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
                 Cov_rp_stTx = Cov_rp_LTx;
                 Cov_rp_swTx = Cov_rp_RTx;
                 
+                % q special
+                rp_stT_spe = rp_LT_spe;
+                Cov_rp_stTx_spe = Cov_rp_LTx_spe;
+                
             else
                 p_stT = p_RT;
                 Jp_stT = Jp_RT;
@@ -192,6 +238,10 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
                 
                 Cov_rp_stTx = Cov_rp_RTx;
                 Cov_rp_swTx = Cov_rp_LTx;
+                
+                % q special
+                rp_stT_spe = rp_RT_spe;
+                Cov_rp_stTx_spe = Cov_rp_RTx_spe;
             end
             
 
@@ -207,14 +257,17 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
             
 
             
-            
+            ut = obj.T_sample*obj.total_mass*g*rp_stT(1);
             Rt = (obj.T_sample*obj.total_mass*g)^2*Cov_rp_stTx;
             Qt = Cov_L_stTy;
             
             
+            ut_spe = obj.T_sample*obj.total_mass*g*rp_stT_spe(1);
+            Rt_spe = (obj.T_sample*obj.total_mass*g)^2*Cov_rp_stTx_spe;
+            
             if obj.t_prev ~= t_total
-                l_stToe_bar = obj.l_stToe_kf + obj.T_sample*obj.total_mass*g*rp_stT(1);
-                sigma_bar = At*obj.sigma*At' + Rt;
+                l_stToe_bar = obj.l_stToe_kf + ut_spe;
+                sigma_bar = At*obj.sigma*At' + Rt_spe;
                 Kt = sigma_bar*Ct'*(Ct*sigma_bar*Ct'+Qt)^-1;
                 obj.l_stToe_kf = l_stToe_bar + Kt*(L_stToe_obs(2)-Ct*l_stToe_bar);
                 obj.sigma = (1-Kt*Ct)*sigma_bar;
@@ -315,6 +368,7 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
             Data.dh0 = dh0;
             
             Data.l_stToe_kf = obj.l_stToe_kf;
+            Data.l_stToe_obs = L_stToe_obs(2);
             Data.rp_LT = rp_LT;
             Data.sigma = obj.sigma;
             Data.std = sqrt(obj.sigma);
