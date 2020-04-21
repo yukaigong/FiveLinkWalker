@@ -51,19 +51,25 @@ plot(20*Data.stanceLeg,'g--')
 legend('L true','L kf')
 hold off
 
-figure;
-plot(Data_perfect.l_stToe_obs)
-hold on
-plot(Data.l_stToe_kf)
-plot(20*Data.stanceLeg,'g--')
-legend('L true','L kf')
-hold off
-
-figure;
-plot(Data.l_stToe_kf - Data_perfect.l_stToe_obs)
-hold on
-plot(Data.stanceLeg,'g--')
-hold off
+% figure;
+% plot(Data_perfect.l_stToe_obs)
+% hold on
+% plot(Data.l_stToe_kf)
+% plot(20*Data.stanceLeg,'g--')
+% legend('L true','L kf')
+% hold off
+% 
+% figure;
+% plot(Data.l_stToe_kf - Data_perfect.l_stToe_obs)
+% hold on
+% plot(Data.stanceLeg,'g--')
+% hold off
+% 
+% figure;
+% plot(Data.l_stToe_obs - Data_perfect.l_stToe_obs)
+% hold on
+% plot(Data.stanceLeg,'g--')
+% hold off
 
 
 

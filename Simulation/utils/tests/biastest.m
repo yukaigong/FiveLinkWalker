@@ -2,19 +2,23 @@ q_seq = reshape(Data_perfect.q.Data,7,[]);
 dq_seq = reshape(Data_perfect.dq.Data,7,[]);
 Time = Data.dq.Time';
 
-t = 3.8 ; % left stance
+t = 3.8; % left stance
 q_test = q_seq(:,abs(Time-t)<4.4409e-10);
 dq_test = dq_seq(:,abs(Time-t)<4.4409e-10);
 % x =[q;dq];
 
 l_LeftToe_seq = [];
 p_com_seq = [];
+rp_LT_seq = [];
 for i = 1:10000
-    noise = normrnd(zeros(7,1),0.06);
+    noise_q = normrnd(zeros(7,1),0.1);
+    noise_dq = normrnd(zeros(7,1),sqrt(0.0));
     if i == 1
         q = q_test;
+        dq = dq_test;
     else
-        q = q_test + noise;
+        q = q_test + noise_q;
+        dq = dq_test + noise_dq;
     end
     dq = dq_test;
     x = [q;dq];
@@ -51,9 +55,13 @@ for i = 1:10000
     
     l_LeftToe_seq = [l_LeftToe_seq,L_LeftToe(2)];
     p_com_seq = [p_com_seq,p_com];
+    rp_LT_seq = [rp_LT_seq,rp_LT];
 end
 
 true_l = l_LeftToe_seq(1)
 avg_l = mean(l_LeftToe_seq)
+avg_l - true_l
 true_com = p_com_seq(:,1)
 avg_com = mean(p_com_seq,2)
+true_rp_LT = rp_LT_seq(:,1)
+avg_rp_LT = mean(rp_LT_seq,2)
