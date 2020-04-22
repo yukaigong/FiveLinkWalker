@@ -1,59 +1,78 @@
 %Yukai controller.
-classdef JointFilter <matlab.System & matlab.system.mixin.Propagates & matlab.system.mixin.SampleTime %#codegen
+classdef PolyRegressionFilter <matlab.System & matlab.system.mixin.Propagates & matlab.system.mixin.SampleTime %#codegen
     % PROTECTED PROPERTIES ====================================================
-    properties
-        T_sample;
-        fil_matrix;
-        sample_num;
+    properties(Nontunable)
+        sample_time;
+        history_length;
         dop;
-        
+        signal_dim;
     end
     properties(Access = private)
-        measurment_num = 7;
-        q_history = zeros(7,30);
+        %         q_history = zeros(7,30);
         sample_total = 0;
-        
-    end % properties
+    end
+    properties (DiscreteState)
+        q_history;
+        fil_matrix;
+    end
+    %         test = JointFilter.signal_dim;
+    
     
     % PROTECTED METHODS =====================================================
     methods (Access = protected)
+        function setupImpl(obj)
+            obj.q_history = zeros(obj.signal_dim,obj.history_length);
+            obj.fil_matrix = get_PolyRegressionFilterMatrix(obj.dop,obj.history_length,obj.sample_time);
+        end % setupImpl
         
         function dq = stepImpl(obj,q,t)
-            dq=zeros(7,1);
+            %             dq = obj.dq;
+            dq=zeros(obj.signal_dim,1);
             temp = obj.q_history(:,2:end);
             obj.q_history(:,1:end-1) = temp;
             obj.q_history(:,end) = q;
             
-            for i = 1:obj.measurment_num
+            for i = 1:obj.signal_dim
                 dq(i) = obj.fil_matrix*obj.q_history(i,:)';
             end % stepImpl
             
             obj.sample_total = obj.sample_total +1;
-            if obj.sample_total<obj.sample_num
-                dq = zeros(obj.measurment_num,1);
+            if obj.sample_total<obj.history_length
+                dq = zeros(obj.signal_dim,1);
             end
         end
         
-%       function obj = JointFilter(T_sample, fil_matrix, sample_num, dop)
-%          % Initialize Prop1 for each instance
-%         obj.T_sample = T_sample;
-%         obj.fil_matrix = fil_matrix;
-%         obj.sample_num = sample_num;
-%         obj.dop = dop;
-%         obj.q_history = zeros(obj.measurment_num,obj.sample_num);
-%       end
+        %       function obj = JointFilter(T_sample, fil_matrix, history_length, dop)
+        %          % Initialize Prop1 for each instance
+        %         obj.T_sample = T_sample;
+        %         obj.fil_matrix = fil_matrix;
+        %         obj.history_length = history_length;
+        %         obj.dop = dop;
+        %         obj.q_history = zeros(obj.signal_dim,obj.history_length);
+        %       end
+        
+        %%
+        function [sz,dt,cp] = getDiscreteStateSpecificationImpl(obj,name)
+            sz = [0, 0];
+            dt = 'double';
+            cp = false;
+            switch name
+                case 'q_history'
+                    sz = [obj.signal_dim,obj.history_length];
+                case 'fil_matrix'
+                    sz = [1,obj.history_length];
+            end
+        end
         %% Default functions
-        function setupImpl(obj)
-            %SETUPIMPL Initialize System object.
-        end % setupImpl
         
         function resetImpl(~)
             %RESETIMPL Reset System object states.
         end % resetImpl
         
-        function [name_1]  = getInputNamesImpl(~)
+        function [name_1,name_2]  = getInputNamesImpl(~)
             %GETINPUTNAMESIMPL Return input port names for System block
             name_1 = 'q';
+            name_2 = 't';
         end % getInputNamesImpl
         
         function [name_1] = getOutputNamesImpl(~)
@@ -62,9 +81,9 @@ classdef JointFilter <matlab.System & matlab.system.mixin.Propagates & matlab.sy
         end % getOutputNamesImpl
         
         % PROPAGATES CLASS METHODS ============================================
-        function [dq] = getOutputSizeImpl(~)
+        function [dq] = getOutputSizeImpl(obj)
             %GETOUTPUTSIZEIMPL Get sizes of output ports.
-            dq = [7, 1];
+            dq = [obj.signal_dim, 1];
         end % getOutputSizeImpl
         
         function [dq] = getOutputDataTypeImpl(~)
