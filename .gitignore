@@ -1,6 +1,7 @@
 **/slprj/*
 *.asv
 *.mexw64
+**/Build/*
 
 *_grt_rtw/
 *slprj/
