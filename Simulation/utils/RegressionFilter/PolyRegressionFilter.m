@@ -6,6 +6,7 @@ classdef PolyRegressionFilter <matlab.System & matlab.system.mixin.Propagates & 
         history_length;
         dop;
         signal_dim;
+        delay;
     end
     properties(Access = private)
         %         q_history = zeros(7,30);
@@ -22,12 +23,13 @@ classdef PolyRegressionFilter <matlab.System & matlab.system.mixin.Propagates & 
     methods (Access = protected)
         function setupImpl(obj)
             obj.q_history = zeros(obj.signal_dim,obj.history_length);
-            obj.fil_matrix = get_PolyRegressionFilterMatrix(obj.dop,obj.history_length,obj.sample_time);
+            obj.fil_matrix = get_PolyRegressionFilterMatrix(obj.dop,obj.history_length,obj.sample_time,obj.delay);
         end % setupImpl
         
-        function dq = stepImpl(obj,q,t)
+        function dq = stepImpl(obj,q)
             %             dq = obj.dq;
             dq=zeros(obj.signal_dim,1);
+            
             temp = obj.q_history(:,2:end);
             obj.q_history(:,1:end-1) = temp;
             obj.q_history(:,end) = q;

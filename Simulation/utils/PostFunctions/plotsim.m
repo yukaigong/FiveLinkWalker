@@ -65,6 +65,13 @@ hold on
 plot(Data.l_LeftToe_vg + Data.lG)
 plot(20*Data.stanceLeg,'g--')
 hold off
+
+figure;
+plot(Data_perfect.v_LT)
+hold on
+plot(0.1*Data.stanceLeg,'g--')
+hold off
+
 %% Control
 figure;
 plot(Data.hr)

@@ -26,6 +26,13 @@ Data.t_diff = 0;
 
 Data.p_LT = zeros(3,1);
 Data.p_RT = zeros(3,1);
+Data.v_LT = zeros(3,1);
+Data.v_RT = zeros(3,1);
+
+Data.p_stT = zeros(3,1);
+Data.p_swT = zeros(3,1);
+Data.v_stT = zeros(3,1);
+Data.v_swT = zeros(3,1);
 
 Data.p_com = zeros(3,1);
 Data.v_com = zeros(3,1);
@@ -45,4 +52,19 @@ Data.dhr = zeros(4,1);
 Data.h0 = zeros(4,1);
 Data.dh0 = zeros(4,1);
 
+Data.q1 = 0;
+Data.q2 = 0;
+Data.q3 = 0;
+Data.q4 = 0;
+Data.q5 = 0;
+Data.q6 = 0;
+Data.q7 = 0;
+
+Data.dq1 = 0;
+Data.dq2 = 0;
+Data.dq3 = 0;
+Data.dq4 = 0;
+Data.dq5 = 0;
+Data.dq6 = 0;
+Data.dq7 = 0;
 end

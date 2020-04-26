@@ -37,3 +37,5 @@ Jdq_AMworld_about_pA = Jdq_AMworld_about_pA + Jdq_linear;
 export_simulation(AMworld_about_pA,'AMworld_about_pA',EXPO_PATH, {X,dX,pA}, TEMPLATE_PATH);
 export_simulation(Jq_AMworld_about_pA,'Jq_AMworld_about_pA',EXPO_PATH, {X,dX,pA,Jq_pA}, TEMPLATE_PATH);
 export_simulation(Jdq_AMworld_about_pA,'Jdq_AMworld_about_pA',EXPO_PATH, {X,dX,pA,Jdq_pA}, TEMPLATE_PATH);
+
+% notice: Angular Momentum = f(q)*dq;

@@ -1,50 +1,56 @@
 %Yukai controller.
 
-classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matlab.system.mixin.SampleTime %#codegen
+classdef FLW_Controller_4 <matlab.System & matlab.system.mixin.Propagates & matlab.system.mixin.SampleTime %#codegen
     % PROTECTED PROPERTIES ====================================================
     properties
         cov_q;
         cov_dq;
         T_sample;
     end
+    properties(Constant)
+        total_mass = 32;
+    end
     properties(Access = private)
        stanceLeg = -1;
        t0= 0;
-       total_mass = 32;
-       rp_swT_ini = zeros(3,1);
-       rv_swT_ini = zeros(3,1);
+       t_prev = 0;
+       first_iteration_done = 0;
+    end
+    properties(Access = private) % change when swing leg change
+        GRF_sw_z = 0;
+        GRF_st_z = 0;
+        LegSwitch = 0;
+        rp_swT_ini = zeros(3,1);
+        rv_swT_ini = zeros(3,1);
+    end
+    properties(Access = private) % for filters
        l_LeftToe_kf = 0;
        l_RightToe_kf = 0;
        sigma = 0;
        l_stToe_kf = 0;
-       t_prev = 0;
+    end
+    properties(Access = private) % for test
        t_test = 0;
-       
-        GRF_sw_z = 0;
-        GRF_st_z = 0;
-        LegSwitch = 0;
-        first_iteration_done = 0;
-    end % properties
+    end
     
     % PROTECTED METHODS =====================================================
     methods (Access = protected)
         
-        function [u, Data] = stepImpl(obj,x,t_total,GRF)
+        function [u, Data] = stepImpl(obj,q_measured,dq_estimated,t_total,GRF)
+            
             Data = Construct_Data();
-            q = x(1:7);
-            dq = x(8:14);
-            % Let the output be torso angle, com height and delta x,delta z of swing
-            % feet and com. delta = p_com - p_swfeet.
             T = 0.3; % walking period
             V = 1; % Desired velocity at the end of a step
-            Kd = 50;
-            Kp = 500;
+            Kd = 20;
+            Kp = 400;
             g=9.81; 
             ds = 1/T;
-            Cov_q = eye(7) * obj.cov_q;
-            Cov_dq = eye(7) * obj.cov_dq;
+            Cov_q_measured = eye(5) * obj.cov_q;
+            Cov_dq_estimated = eye(5) * obj.cov_dq;
+            Cov_p_StanceToe = zeros(2,2);
+            Cov_v_StanceToe = zeros(2,2);
 %             Cov_dq = eye(7) * 0.05;
-            
+
             t = t_total - obj.t0;
             s = (t_total - obj.t0)/T;
             
@@ -59,6 +65,30 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
                 obj.LegSwitch = 0;
             end
             
+            
+            % construct full q and dq (x,y) with measured q based on stance
+            % leg information
+            q_pre = [0;0;q_measured];
+            dq_pre = [0;0;dq_estimated];
+            Jp_LT_pre = Jp_LeftToe(q_pre);
+            Jp_RT_pre = Jp_RightToe(q_pre);
+            if obj.stanceLeg == -1
+                origin_pos = -p_LeftToe(q_pre);
+                origin_vel = -Jp_LT_pre*dq_pre;
+                Cov_q = [Jp_LT_pre([1,3],[3:7]);eye(5)] * Cov_q_measured * [Jp_LT_pre([1,3],[3:7]);eye(5)]' + [Cov_p_StanceToe,zeros(2,5);zeros(5,7)];
+                Cov_dq = [Jp_LT_pre([1,3],[3:7]);eye(5)] * Cov_dq_estimated * [Jp_LT_pre([1,3],[3:7]);eye(5)]' + [Cov_v_StanceToe,zeros(2,5);zeros(5,7)];
+            else
+                origin_pos = -p_RightToe(q_pre);
+                origin_vel = -Jp_RT_pre*dq_pre;
+                Cov_q = [Jp_RT_pre([1,3],[3:7]);eye(5)] * Cov_q_measured * [Jp_RT_pre([1,3],[3:7]);eye(5)]'; + [Cov_p_StanceToe,zeros(2,5);zeros(5,7)];
+                Cov_dq = [Jp_RT_pre([1,3],[3:7]);eye(5)] * Cov_dq_estimated * [Jp_RT_pre([1,3],[3:7]);eye(5)]'+ [Cov_v_StanceToe,zeros(2,5);zeros(5,7)];
+            end
+            q = [origin_pos([1,3]); q_pre([3:7])];
+            dq = [origin_vel([1,3]); dq_pre([3:7])];
+            
+
+            
+            
 
             if obj.stanceLeg == -1
                 obj.GRF_sw_z = GRF(6);
@@ -67,6 +97,7 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
                 obj.GRF_sw_z = GRF(3);
                 obj.GRF_st_z = GRF(6);
             end
+
             
             p_com = p_COM(q);
             Jp_com = Jp_COM(q);
@@ -95,11 +126,11 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
             dJrp_RT = dJp_com - dJp_RT;
             rv_RT = v_com - v_RT;
             
-            LG = getFLWAngularMomentum(p_com,x);
-            L_LeftToe = getFLWAngularMomentum(p_LT,x);
-            L_RightToe = getFLWAngularMomentum(p_RT,x);
-            L_LeftToe_vg = obj.total_mass*cross(rp_LT,v_com);
-            L_RightToe_vg = obj.total_mass*cross(rp_RT,v_com);
+            LG = getFLWAngularMomentum(p_com, [q;dq]);
+            L_LeftToe = getFLWAngularMomentum(p_LT, [q;dq]);
+            L_RightToe = getFLWAngularMomentum(p_RT, [q;dq]);
+            L_LeftToe_vg = obj.total_mass*cross(rp_LT, v_com);
+            L_RightToe_vg = obj.total_mass*cross(rp_RT, v_com);
             
             L_LeftToe_obs = L_LeftToe;
             L_RightToe_obs = L_RightToe;
@@ -287,6 +318,9 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
             Jg = Jp_stT([1,3],:);
             dJg = dJp_stT([1,3],:);
             
+            
+            % Let the output be torso angle, com height and delta x,delta z of swing
+            % feet and com. delta = p_com - p_swfeet.
             h0 = [q(3);rp_stT(3);rp_swT([1,3])];
             dh0 = Jh*dq;
             
@@ -306,11 +340,16 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
             
             u = (Jh*S*Me^-1*Be)^-1*(-Kd*dy-Kp*y+ddhr+Jh*S*Me^-1*He);
 %             u = 10*ones(4,1)*sin(t);
+%             u = zeros(4,1);
             
 %%          
             Data.t_diff = t_total - obj.t_prev;
             obj.t_prev = t_total;
             obj.t_test = obj.t_test + obj.T_sample;
+            
+            if obj.first_iteration_done == 0
+                obj.first_iteration_done = 1;
+            end
 %% Data assignment
             Data.stanceLeg = obj.stanceLeg;
             Data.lG = LG(2);
@@ -378,7 +417,6 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
             Data.dq6 = dq(6);
             Data.dq7 = dq(7);
             
-            
         end % stepImpl
 
         %% Default functions
@@ -390,11 +428,13 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
             %RESETIMPL Reset System object states.
         end % resetImpl
         
-        function [name_1, name_2, name_3]  = getInputNamesImpl(~)
+        function [name_1, name_2, name_3, name_4]  = getInputNamesImpl(~)
             %GETINPUTNAMESIMPL Return input port names for System block
-            name_1 = 'x';
-            name_2 = 't';
-            name_3 = 'GRF';
+            name_1 = 'q_measured';
+            name_2 = 'dq_estimated';
+            name_3 = 't';
+            name_4 = 'GRF';
+            
         end % getInputNamesImpl
         
         function [name_1, name_2] = getOutputNamesImpl(~)
