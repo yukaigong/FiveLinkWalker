@@ -34,6 +34,11 @@ Data.p_swT = zeros(3,1);
 Data.v_stT = zeros(3,1);
 Data.v_swT = zeros(3,1);
 
+Data.rp_Hip2LT = zeros(3,1);
+Data.rp_Hip2RT = zeros(3,1);
+Data.rv_Hip2LT = zeros(3,1);
+Data.rv_Hip2RT = zeros(3,1);
+
 Data.p_com = zeros(3,1);
 Data.v_com = zeros(3,1);
 Data.vx_com = 0;

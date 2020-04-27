@@ -33,6 +33,8 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
             Data = Construct_Data();
             q = x(1:7);
             dq = x(8:14);
+            q_pre = zeros(7,1); q_pre(3:7) = q(3:7);
+            dq_pre = zeros(7,1); dq_pre(3:7) = dq(3:7);
             % Let the output be torso angle, com height and delta x,delta z of swing
             % feet and com. delta = p_com - p_swfeet.
             T = 0.3; % walking period
@@ -67,6 +69,13 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
                 obj.GRF_sw_z = GRF(3);
                 obj.GRF_st_z = GRF(6);
             end
+            
+            Jp_LT_pre = Jp_LeftToe(q_pre);
+            Jp_RT_pre = Jp_RightToe(q_pre);
+            rp_Hip2LT = -p_LeftToe(q_pre); % relative position between hip and left toe
+            rp_Hip2RT = -p_RightToe(q_pre);
+            rv_Hip2LT = -Jp_LT_pre*dq_pre;
+            rv_Hip2RT = -Jp_RT_pre*dq_pre;
             
             p_com = p_COM(q);
             Jp_com = Jp_COM(q);
@@ -348,6 +357,11 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
             Data.p_swT = p_swT;
             Data.v_stT = v_stT;
             Data.v_swT = v_swT;
+            
+            Data.rp_Hip2LT = rp_Hip2LT;
+            Data.rp_Hip2RT = rp_Hip2RT;
+            Data.rv_Hip2LT = rv_Hip2LT;
+            Data.rv_Hip2RT = rv_Hip2RT;
             
             Data.p_com = p_com;
             Data.v_com = v_com;

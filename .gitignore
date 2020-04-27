@@ -2,6 +2,7 @@
 *.asv
 *.mexw64
 **/Build/*
+**/PicAndData/*
 
 *_grt_rtw/
 *slprj/

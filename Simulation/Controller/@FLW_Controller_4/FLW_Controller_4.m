@@ -72,14 +72,18 @@ classdef FLW_Controller_4 <matlab.System & matlab.system.mixin.Propagates & matl
             dq_pre = [0;0;dq_estimated];
             Jp_LT_pre = Jp_LeftToe(q_pre);
             Jp_RT_pre = Jp_RightToe(q_pre);
+            rp_Hip2LT = -p_LeftToe(q_pre); % relative position between hip and left toe
+            rp_Hip2RT = -p_RightToe(q_pre);
+            rv_Hip2LT = -Jp_LT_pre*dq_pre;
+            rv_Hip2RT = -Jp_RT_pre*dq_pre;
             if obj.stanceLeg == -1
-                origin_pos = -p_LeftToe(q_pre);
-                origin_vel = -Jp_LT_pre*dq_pre;
+                origin_pos = rp_Hip2LT;
+                origin_vel = rv_Hip2LT;
                 Cov_q = [Jp_LT_pre([1,3],[3:7]);eye(5)] * Cov_q_measured * [Jp_LT_pre([1,3],[3:7]);eye(5)]' + [Cov_p_StanceToe,zeros(2,5);zeros(5,7)];
                 Cov_dq = [Jp_LT_pre([1,3],[3:7]);eye(5)] * Cov_dq_estimated * [Jp_LT_pre([1,3],[3:7]);eye(5)]' + [Cov_v_StanceToe,zeros(2,5);zeros(5,7)];
             else
-                origin_pos = -p_RightToe(q_pre);
-                origin_vel = -Jp_RT_pre*dq_pre;
+                origin_pos = rp_Hip2RT;
+                origin_vel = rv_Hip2RT;
                 Cov_q = [Jp_RT_pre([1,3],[3:7]);eye(5)] * Cov_q_measured * [Jp_RT_pre([1,3],[3:7]);eye(5)]'; + [Cov_p_StanceToe,zeros(2,5);zeros(5,7)];
                 Cov_dq = [Jp_RT_pre([1,3],[3:7]);eye(5)] * Cov_dq_estimated * [Jp_RT_pre([1,3],[3:7]);eye(5)]'+ [Cov_v_StanceToe,zeros(2,5);zeros(5,7)];
             end
@@ -387,6 +391,11 @@ classdef FLW_Controller_4 <matlab.System & matlab.system.mixin.Propagates & matl
             Data.p_swT = p_swT;
             Data.v_stT = v_stT;
             Data.v_swT = v_swT;
+            
+            Data.rp_Hip2LT = rp_Hip2LT;
+            Data.rp_Hip2RT = rp_Hip2RT;
+            Data.rv_Hip2LT = rv_Hip2LT;
+            Data.rv_Hip2RT = rv_Hip2RT;
             
             Data.p_com = p_com;
             Data.v_com = v_com;
