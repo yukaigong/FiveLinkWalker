@@ -25,17 +25,21 @@ plot(Data.dq5 - Data_perfect.dq5);hold on; plot(Data.stanceLeg,'g-.'); hold off;
 legend('dq5 error')
 ax(6) = gca;
 
-figure;
-plot(d_leg_angle_perfect);hold on; plot(d_leg_angle); plot(Data.stanceLeg,'g-.'); hold off; grid on
-legend('leg angle true','leg angle estimated')
-ax(7) = gca;
-figure;
-plot(d_leg_angle - d_leg_angle_perfect);hold on; plot(Data.stanceLeg,'g.-'); hold off; grid on
-legend('leg angle error')
-ax(8) = gca;
+% figure;
+% plot(d_leg_angle_perfect);hold on; plot(d_leg_angle); plot(Data.stanceLeg,'g-.'); hold off; grid on
+% legend('leg angle true','leg angle estimated')
+% ax(7) = gca;
+% figure;
+% plot(d_leg_angle - d_leg_angle_perfect);hold on; plot(Data.stanceLeg,'g.-'); hold off; grid on
+% legend('leg angle error')
+% ax(8) = gca;
+
+
+dq1_perfect = reshape(Data_perfect.dq1.Data,1,[]);
+dq1 = reshape(Data.dq1.Data,1,[]);
 
 figure;
-plot(Data_perfect.dq1);hold on; plot(Data.dq1); plot(Data.stanceLeg,'g-.'); hold off; grid on
+plot(Data.dq1.Time, dq1_perfect);hold on; plot(Data.dq1.Time, dq1); plot(Data.stanceLeg,'g-.'); hold off; grid on
 legend('dq1 true','dq1 estimated')
 ax(9) = gca;
 figure;
@@ -55,6 +59,18 @@ figure;
 plot(Data.rv_Hip2LT.Time, rv_Hip2LT(1,:) - rv_Hip2LT_perfect(1,:)); hold on; plot(Data.stanceLeg,'g-.'); hold off; grid on
 legend('rv Hip2LT error')
 ax(12) = gca;
+
+rv_Hip2RT_perfect = reshape(Data_perfect.rv_Hip2RT.Data,3,[]);
+rv_Hip2RT = reshape(Data.rv_Hip2RT.Data,3,[]);
+
+figure;
+plot(Data_perfect.rv_Hip2RT.Time, rv_Hip2RT_perfect(1,:));hold on; plot(Data.rv_Hip2RT.Time, rv_Hip2RT(1,:)); plot(Data.stanceLeg,'g-.'); hold off; grid on
+legend('rv Hip2RT true','rv Hip2RT estimated')
+ax(13) = gca;
+figure;
+plot(Data.rv_Hip2RT.Time, rv_Hip2RT(1,:) - rv_Hip2RT_perfect(1,:)); hold on; plot(Data.stanceLeg,'g-.'); hold off; grid on
+legend('rv Hip2RT error')
+ax(14) = gca;
 
 linkaxes(ax,'x');
 

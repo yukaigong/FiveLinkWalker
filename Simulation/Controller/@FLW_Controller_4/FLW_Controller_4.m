@@ -22,6 +22,8 @@ classdef FLW_Controller_4 <matlab.System & matlab.system.mixin.Propagates & matl
         LegSwitch = 0;
         rp_swT_ini = zeros(3,1);
         rv_swT_ini = zeros(3,1);
+        stToe_pos = zeros(3,1);
+        swToe_pos = zeros(3,1);
     end
     properties(Access = private) % for filters
        l_LeftToe_kf = 0;
@@ -36,7 +38,7 @@ classdef FLW_Controller_4 <matlab.System & matlab.system.mixin.Propagates & matl
     % PROTECTED METHODS =====================================================
     methods (Access = protected)
         
-        function [u, Data] = stepImpl(obj,q_measured,dq_estimated,t_total,GRF)
+        function [u, Data, origin_pos] = stepImpl(obj,q_measured,dq_estimated,t_total,GRF)
             
             Data = Construct_Data();
             T = 0.3; % walking period
@@ -61,6 +63,7 @@ classdef FLW_Controller_4 <matlab.System & matlab.system.mixin.Propagates & matl
                 t = 0;
                 s = 0;
                 obj.LegSwitch = 1;
+                obj.stToe_pos = obj.swToe_pos;
             else
                 obj.LegSwitch = 0;
             end
@@ -77,15 +80,17 @@ classdef FLW_Controller_4 <matlab.System & matlab.system.mixin.Propagates & matl
             rv_Hip2LT = -Jp_LT_pre*dq_pre;
             rv_Hip2RT = -Jp_RT_pre*dq_pre;
             if obj.stanceLeg == -1
-                origin_pos = rp_Hip2LT;
+                origin_pos = rp_Hip2LT + obj.stToe_pos;
                 origin_vel = rv_Hip2LT;
                 Cov_q = [Jp_LT_pre([1,3],[3:7]);eye(5)] * Cov_q_measured * [Jp_LT_pre([1,3],[3:7]);eye(5)]' + [Cov_p_StanceToe,zeros(2,5);zeros(5,7)];
                 Cov_dq = [Jp_LT_pre([1,3],[3:7]);eye(5)] * Cov_dq_estimated * [Jp_LT_pre([1,3],[3:7]);eye(5)]' + [Cov_v_StanceToe,zeros(2,5);zeros(5,7)];
+                obj.swToe_pos = origin_pos - rp_Hip2RT;
             else
-                origin_pos = rp_Hip2RT;
+                origin_pos = rp_Hip2RT + obj.stToe_pos;
                 origin_vel = rv_Hip2RT;
                 Cov_q = [Jp_RT_pre([1,3],[3:7]);eye(5)] * Cov_q_measured * [Jp_RT_pre([1,3],[3:7]);eye(5)]'; + [Cov_p_StanceToe,zeros(2,5);zeros(5,7)];
                 Cov_dq = [Jp_RT_pre([1,3],[3:7]);eye(5)] * Cov_dq_estimated * [Jp_RT_pre([1,3],[3:7]);eye(5)]'+ [Cov_v_StanceToe,zeros(2,5);zeros(5,7)];
+                obj.swToe_pos = origin_pos - rp_Hip2LT;
             end
             q = [origin_pos([1,3]); q_pre([3:7])];
             dq = [origin_vel([1,3]); dq_pre([3:7])];
@@ -446,35 +451,73 @@ classdef FLW_Controller_4 <matlab.System & matlab.system.mixin.Propagates & matl
             
         end % getInputNamesImpl
         
-        function [name_1, name_2] = getOutputNamesImpl(~)
+        function [name_1, name_2, name_3] = getOutputNamesImpl(~)
             %GETOUTPUTNAMESIMPL Return output port names for System block
             name_1 = 'u';
             name_2 = 'Data';
+            name_3 = 'origin_pos';
         end % getOutputNamesImpl
         
         % PROPAGATES CLASS METHODS ============================================
-        function [u, Data] = getOutputSizeImpl(~)
+        function [u, Data, origin_pos] = getOutputSizeImpl(~)
             %GETOUTPUTSIZEIMPL Get sizes of output ports.
             u = [4, 1];
             Data = [1, 1];
+            origin_pos = [3, 1];
         end % getOutputSizeImpl
         
-        function [u, Data] = getOutputDataTypeImpl(~)
+        function [u, Data, origin_pos] = getOutputDataTypeImpl(~)
             %GETOUTPUTDATATYPEIMPL Get data types of output ports.
             u = 'double';
             Data = 'cassieDataBus';
+            origin_pos = 'double';
         end % getOutputDataTypeImpl
         
-        function [u, Data] = isOutputComplexImpl(~)
+        function [u, Data, origin_pos] = isOutputComplexImpl(~)
             %ISOUTPUTCOMPLEXIMPL Complexity of output ports.
             u = false;
             Data = false;
+            origin_pos = false;
         end % isOutputComplexImpl
         
-        function [u, Data] = isOutputFixedSizeImpl(~)
+        function [u, Data, origin_pos] = isOutputFixedSizeImpl(~)
             %ISOUTPUTFIXEDSIZEIMPL Fixed-size or variable-size output ports.
             u = true;
             Data = true;
+            origin_pos = true;
         end % isOutputFixedSizeImpl
+        
+        
+        
+%         function [name_1, name_2] = getOutputNamesImpl(~)
+%             %GETOUTPUTNAMESIMPL Return output port names for System block
+%             name_1 = 'u';
+%             name_2 = 'Data';
+%         end % getOutputNamesImpl
+        
+%         % PROPAGATES CLASS METHODS ============================================
+%         function [u, Data] = getOutputSizeImpl(~)
+%             %GETOUTPUTSIZEIMPL Get sizes of output ports.
+%             u = [4, 1];
+%             Data = [1, 1];
+%         end % getOutputSizeImpl
+%         
+%         function [u, Data] = getOutputDataTypeImpl(~)
+%             %GETOUTPUTDATATYPEIMPL Get data types of output ports.
+%             u = 'double';
+%             Data = 'cassieDataBus';
+%         end % getOutputDataTypeImpl
+%         
+%         function [u, Data] = isOutputComplexImpl(~)
+%             %ISOUTPUTCOMPLEXIMPL Complexity of output ports.
+%             u = false;
+%             Data = false;
+%         end % isOutputComplexImpl
+%         
+%         function [u, Data] = isOutputFixedSizeImpl(~)
+%             %ISOUTPUTFIXEDSIZEIMPL Fixed-size or variable-size output ports.
+%             u = true;
+%             Data = true;
+%         end % isOutputFixedSizeImpl        
     end % methods
 end % classdef

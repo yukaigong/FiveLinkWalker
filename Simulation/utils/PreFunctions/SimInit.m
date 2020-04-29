@@ -41,7 +41,7 @@ IC = [base_xz;base_rot;q1L;q2L;q1R;q2R;...
 
 % IC(2) = 10;
 
-cov_q = 0*10^-8;
+cov_q = 1*10^-9;
 cov_dq = 0.00;
 
 sample_time = 0.0005;
