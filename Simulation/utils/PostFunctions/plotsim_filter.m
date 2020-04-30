@@ -56,7 +56,7 @@ plot(Data_perfect.l_stToe)
 hold on
 plot(Data.l_stToe)
 plot(20*Data.stanceLeg,'g--')
-legend('L true','L kf')
+legend('L true','L obs')
 hold off
 
 figure;
@@ -65,6 +65,14 @@ hold on
 plot(Data.vx_com)
 plot(20*Data.stanceLeg,'g--')
 legend('L true','L kf')
+hold off
+
+figure;
+plot(Data_perfect.l_LeftToe)
+hold on
+plot(Data.l_LeftToe)
+plot(20*Data.stanceLeg,'g--')
+legend('L true','L obs')
 hold off
 
 

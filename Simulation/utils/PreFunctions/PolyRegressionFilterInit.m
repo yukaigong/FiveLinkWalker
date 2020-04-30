@@ -16,12 +16,11 @@ PsuedoInverse=inv(R)*Q';
 Matrix_temp = zeros(1,dop+1);
 Matrix_temp(2) = 1;
 fil_matrix = Matrix_temp*PsuedoInverse;
-fil_matrix_2 = Matrix_temp*(A'*A)^-1*A';
 
 % for i = 1:sample_num
 %     for j = 1:dop+1
 
-% cov_dq = sum(fil_matrix.^2)*cov_q;
+cov_dq_estimated = sum(fil_matrix.^2)*cov_q_measured;
 
 % sum(fil_matrix.^2)
 
