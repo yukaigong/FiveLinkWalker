@@ -64,8 +64,17 @@ plot(Data_perfect.vx_com)
 hold on
 plot(Data.vx_com)
 plot(20*Data.stanceLeg,'g--')
-legend('L true','L kf')
+legend('vx com true','vx com obs')
 hold off
+
+figure;
+plot(Data_perfect.vz_com)
+hold on
+plot(Data.vz_com)
+plot(20*Data.stanceLeg,'g--')
+legend('vz com true','vz com obs')
+hold off
+
 
 figure;
 plot(Data_perfect.l_LeftToe)

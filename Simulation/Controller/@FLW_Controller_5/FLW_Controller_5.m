@@ -261,7 +261,8 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
             LBf = 32*(q(2)*dq(1))+LG(2);
 %             LBf = 32*(q(2)*dq(1));
 %             pseudo_com_vx = L_stToe(2)/(32*q(2));
-            pseudo_com_vx = obj.l_stToe_kf/(32*q(2));
+            pseudo_com_vx = L_stToe(2)/(32*(q(2)-p_stT(3)));
+%             pseudo_com_vx = obj.l_stToe_kf/(32*q(2));
             l = sqrt(g/q(2));
             one_step_max_vel_gain = obj.T*l*0.2;
 %             dx0_next = rp_stT(1)*l*sinh(l*T_left) + rv_stT(1)*cosh(l*T_left);
