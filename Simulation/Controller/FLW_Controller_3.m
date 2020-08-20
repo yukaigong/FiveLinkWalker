@@ -363,6 +363,9 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
             Data.rv_Hip2LT = rv_Hip2LT;
             Data.rv_Hip2RT = rv_Hip2RT;
             
+            Data.rp_stT = rp_stT;
+            Data.rv_stT = rv_stT;
+            
             Data.p_com = p_com;
             Data.v_com = v_com;
             Data.vx_com = v_com(1);

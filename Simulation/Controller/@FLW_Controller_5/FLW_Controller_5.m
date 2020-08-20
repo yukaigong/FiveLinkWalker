@@ -49,7 +49,7 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
             stanceLeg = EstStates.stanceLeg;
             LegSwitch = EstStates.LegSwitch;
            
-            V = 1; % Desired velocity at the end of a step
+            V = 3; % Desired velocity at the end of a step
             
             
             
@@ -382,6 +382,9 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
             Data.rp_Hip2RT = rp_Hip2RT;
             Data.rv_Hip2LT = rv_Hip2LT;
             Data.rv_Hip2RT = rv_Hip2RT;
+            
+            Data.rp_stT = rp_stT;
+            Data.rv_stT = rv_stT;
             
             Data.p_com = p_com;
             Data.v_com = v_com;
