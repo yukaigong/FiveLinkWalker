@@ -6,12 +6,14 @@ Data.l_LeftToe = 0;
 Data.l_RightToe = 0;
 Data.l_LeftToe_vg = 0;
 Data.l_RightToe_vg = 0;
+Data.l_stToe_vg = 0;
 Data.l_stToe = 0;
 Data.x0 = 0;
 
 Data.dx0_next = 0;
 Data.x0_next = 0;
 Data.dxf_next_goal = 0;
+Data.vx0_next = 0;
 
 Data.l_stToe_kf = 0;
 Data.l_stToe_obs = 0;

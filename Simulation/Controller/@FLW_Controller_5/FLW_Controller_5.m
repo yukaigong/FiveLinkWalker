@@ -30,6 +30,7 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
        l_RightToe_kf = 0;
        sigma = 0;
        l_stToe_kf = 0;
+       command_V = 0;
     end
     properties(Access = private) % for test
        t_test = 0;
@@ -49,7 +50,9 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
             stanceLeg = EstStates.stanceLeg;
             LegSwitch = EstStates.LegSwitch;
            
-            V = 3; % Desired velocity at the end of a step
+            
+            obj.command_V = (1-0.002)*obj.command_V + (0.002)*2;
+            V = obj.command_V; % Desired velocity at the end of a step
             
             
             
@@ -258,20 +261,24 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
             
             
             T_left = obj.T - t;
-            LBf = 32*(q(2)*dq(1))+LG(2);
+            LBf = 32*(q(2)*dq(1))+LG(2); %%%%%%%% Notice! should use p_com(3) instead of q(2)!!!!!!!!!!!!!!!!!!!!!!
 %             LBf = 32*(q(2)*dq(1));
-%             pseudo_com_vx = L_stToe(2)/(32*q(2));
-            pseudo_com_vx = L_stToe(2)/(32*(q(2)-p_stT(3)));
+%             pseudo_com_vx = L_stToe(2)/(32*p_com(3)(2));
+            pseudo_com_vx = L_stToe(2)/(32*(p_com(3)-p_stT(3)));
 %             pseudo_com_vx = obj.l_stToe_kf/(32*q(2));
             l = sqrt(g/q(2));
-            one_step_max_vel_gain = obj.T*l*0.2;
+%             one_step_max_vel_gain = obj.T*l*100;
 %             dx0_next = rp_stT(1)*l*sinh(l*T_left) + rv_stT(1)*cosh(l*T_left);
             dx0_next = rp_stT(1)*l*sinh(l*T_left) + pseudo_com_vx*cosh(l*T_left);
-            dxf_next_goal = median([dx0_next + one_step_max_vel_gain, dx0_next - one_step_max_vel_gain, V]);
+%             dxf_next_goal = median([dx0_next + one_step_max_vel_gain, dx0_next - one_step_max_vel_gain, V]);
+            dxf_next_goal = V;
             x0_next = (dxf_next_goal - dx0_next*cosh(l*obj.T))/(l*sinh(l*obj.T));
             % x0_next is the desired relative position of COM to stance foot in the beginning of next step,(at this step it is still swing foot) so that COM velocity can be V at time obj.T
             
+            vx0_next = rp_stT(1)*l*sinh(l*T_left) + v_com(1)*cosh(l*T_left);
+            
             w = pi/obj.T;
+%             H = 0.6 + 0.2*min(1,t_total/10);
             H = 0.6;
             CL = 0.1;
             
@@ -352,6 +359,8 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
             Data.dx0_next = dx0_next;
             Data.x0_next = x0_next;
             Data.dxf_next_goal = dxf_next_goal;
+            
+            Data.vx0_next = vx0_next;
             
             Data.hr = hr;
             Data.dhr = dhr;

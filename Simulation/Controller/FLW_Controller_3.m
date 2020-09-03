@@ -174,6 +174,9 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
                 L_stToe = L_LeftToe;
                 L_swToe = L_RightToe;
                 
+                L_stToe_vg = L_LeftToe_vg;
+                L_swToe_vg = L_RightToe_vg;
+                
                 L_stToe_obs = L_LeftToe_obs;
                 L_swToe_obs = L_RightToe_obs;
                 
@@ -182,7 +185,6 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
                 
                 Cov_rp_stTx = Cov_rp_LTx;
                 Cov_rp_swTx = Cov_rp_RTx;
-                
                 
             else
                 p_stT = p_RT;
@@ -207,6 +209,9 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
                 
                 L_stToe = L_RightToe;
                 L_swToe = L_LeftToe;
+                
+                L_stToe_vg = L_RightToe_vg;
+                L_swToe_vg = L_LeftToe_vg;
                 
                 L_stToe_obs = L_RightToe_obs;
                 L_swToe_obs = L_LeftToe_obs;
@@ -327,6 +332,7 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
             Data.l_RightToe = L_RightToe(2);
             Data.l_LeftToe_vg = L_LeftToe_vg(2);
             Data.l_RightToe_vg = L_RightToe_vg(2);
+            Data.l_stToe_vg = L_stToe_vg(2);
             Data.l_stToe = L_stToe(2);
             
             Data.dx0_next = dx0_next;
