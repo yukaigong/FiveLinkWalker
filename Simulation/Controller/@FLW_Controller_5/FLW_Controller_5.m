@@ -53,7 +53,7 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
             
             obj.command_V = (1-0.002)*obj.command_V + (0.002)*2;
             V = obj.command_V; % Desired velocity at the end of a step
-            
+%             V = 2;
             
             
             Kd = 20;
@@ -261,13 +261,13 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
             
             
             T_left = obj.T - t;
-            LBf = 32*(q(2)*dq(1))+LG(2); %%%%%%%% Notice! should use p_com(3) instead of q(2)!!!!!!!!!!!!!!!!!!!!!!
+%             LBf = 32*(q(2)*dq(1))+LG(2); %%%%%%%% Notice! should use p_com(3) instead of q(2)!!!!!!!!!!!!!!!!!!!!!!
 %             LBf = 32*(q(2)*dq(1));
 %             pseudo_com_vx = L_stToe(2)/(32*p_com(3)(2));
             pseudo_com_vx = L_stToe(2)/(32*(p_com(3)-p_stT(3)));
-%             pseudo_com_vx = obj.l_stToe_kf/(32*q(2));
+%             pseudo_com_vx = v_com(1);
             l = sqrt(g/q(2));
-%             one_step_max_vel_gain = obj.T*l*100;
+            one_step_max_vel_gain = obj.T*l*0.2;
 %             dx0_next = rp_stT(1)*l*sinh(l*T_left) + rv_stT(1)*cosh(l*T_left);
             dx0_next = rp_stT(1)*l*sinh(l*T_left) + pseudo_com_vx*cosh(l*T_left);
 %             dxf_next_goal = median([dx0_next + one_step_max_vel_gain, dx0_next - one_step_max_vel_gain, V]);
