@@ -25,6 +25,7 @@ Data.rp_LT = zeros(3,1);
 
 Data.t_test = 0;
 Data.t_diff = 0;
+Data.s = 0;
 
 Data.p_LT = zeros(3,1);
 Data.p_RT = zeros(3,1);

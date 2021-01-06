@@ -376,6 +376,7 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
             Data.Qt = Qt;
             
             Data.t_test = obj.t_test;
+            Data.s = s;
             
             Data.p_LT = p_LT;
             Data.p_RT = p_RT;
