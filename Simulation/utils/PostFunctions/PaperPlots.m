@@ -45,7 +45,7 @@ saveas(f1,'L_FLW.png')
 saveas(f2,'LCOM_FLW.png')
 saveas(f3,'vxCOM_FLW.png')
 
-%%
+%% Prediction
 
 f1 = figure;
 ax(1) = gca;
@@ -71,7 +71,7 @@ hold off;
 grid on
 % legend({'Instantaneous value of {\boldmath$\frac{L^y}{mH}$}','Predicted value at end of step'},'Interpreter','latex')
 xlabel('\textbf{Time (s)}','Interpreter','latex','FontSize',12)
-ylabel('{\boldmath$\frac{L^y}{mH}$} \textbf{(m/s)}','Interpreter','latex','FontSize',12)
+ylabel('{\boldmath$\frac{L}{mH}$} \textbf{(m/s)}','Interpreter','latex','FontSize',12)
 
 
 f3 = figure;
@@ -85,13 +85,13 @@ hold off;
 grid on
 % legend({'Instantaneous value of {\boldmath$v^x_{\rm CoM}$}','Predicted value at end of step'},'Interpreter','latex')
 xlabel('\textbf{Time (s)}','Interpreter','latex')
-ylabel('{\boldmath$v^x_{\rm CoM}$} \textbf{(m/s)}','Interpreter','latex')
+ylabel('{\boldmath$v_{\rm c}$} \textbf{(m/s)}','Interpreter','latex')
 
 linkaxes(ax,'xy')
 
 axis([14.95, 15.35, 0.5, 2.5])
 
-% figure_path = [root_dir, '\PicsData\PD200820'];
+figure_path = [root_dir, '\PicsData\PD200820'];
 figure_path = [root_dir, '\PicsData\PD201017_paper'];
 cd(figure_path)
 saveas(f1,'L_VxCOm_FLW.png')

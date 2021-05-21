@@ -37,7 +37,7 @@ classdef FLW_Controller_3 <matlab.System & matlab.system.mixin.Propagates & matl
             dq_pre = zeros(7,1); dq_pre(3:7) = dq(3:7);
             % Let the output be torso angle, com height and delta x,delta z of swing
             % feet and com. delta = p_com - p_swfeet.
-            T = 0.3; % walking period
+            T = 0.4; % walking period
             V = 1; % Desired velocity at the end of a step
             Kd = 50;
             Kp = 500;

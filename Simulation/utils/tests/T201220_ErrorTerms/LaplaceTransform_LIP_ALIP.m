@@ -4,7 +4,7 @@ m = 32;
 l = sqrt(g/H);
 
 %LIP
-numerator = [1 0]*(-1/(m*H));
+numerator = [1 0 0]*(-1/(m*H));
 denominator = [1 0 -l^2];
 sys_lip = tf(numerator,denominator);
 

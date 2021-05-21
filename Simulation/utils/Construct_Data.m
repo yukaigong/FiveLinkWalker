@@ -1,4 +1,8 @@
 function Data = Construt_Data()
+Data.Lc_effect = zeros(2,1);
+Data.Lc_est = 0;
+Data.dx0_next_withLc = 0;
+Data.LegSwitch = 0;
 
 Data.stanceLeg = 0;
 Data.lG = 0;
@@ -15,6 +19,8 @@ Data.x0_next = 0;
 Data.dxf_next_goal = 0;
 Data.vx0_next = 0;
 
+Data.dx0_next_special = 0;
+
 Data.l_stToe_kf = 0;
 Data.l_stToe_obs = 0;
 Data.sigma = 0;
@@ -26,6 +32,7 @@ Data.rp_LT = zeros(3,1);
 Data.t_test = 0;
 Data.t_diff = 0;
 Data.s = 0;
+Data.t = 0;
 
 Data.p_LT = zeros(3,1);
 Data.p_RT = zeros(3,1);
@@ -62,6 +69,8 @@ Data.hr = zeros(4,1);
 Data.dhr = zeros(4,1);
 Data.h0 = zeros(4,1);
 Data.dh0 = zeros(4,1);
+
+Data.V_command = 0;
 
 Data.q1 = 0;
 Data.q2 = 0;

@@ -24,6 +24,7 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
         rv_swT_ini = zeros(3,1);
         stToe_pos = zeros(3,1);
         swToe_pos = zeros(3,1);
+        l_ini = 0;
     end
     properties(Access = private) % for filters
        l_LeftToe_kf = 0;
@@ -51,14 +52,49 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
             LegSwitch = EstStates.LegSwitch;
            
             
-            obj.command_V = (1-0.002)*obj.command_V + (0.002)*2;
-            V = obj.command_V; % Desired velocity at the end of a step
+%             obj.command_V = (1-0.002)*obj.command_V + (0.002)*2;
+%             V = obj.command_V; % Desired velocity at the end of a step
 %             V = 2;
+            V = 0;
+            if t_total>5
+                V = 0.5;
+            end
+            if t_total>10
+                V = 1;
+            end
+            if t_total>15
+                V = 1.5;
+            end
+            if t_total>20
+                V = 2;
+            end
+            if t_total>25
+                V = 2/5*max([0,(30-t_total)]);
+            end
             
+            if t_total>30
+                V = -0.5;
+            end
+            if t_total>35
+                V = -1;
+            end
+            if t_total>40
+                V = -1.5;
+            end
+            if t_total>45
+                V = -2;
+            end
+%             if t_total>30
+% %                 V = 2/2*max([0,(28-t_total)]);
+%                 V = 0;
+%             end
+            obj.command_V = (1-0.002)*obj.command_V + (0.002)*V;
+            V = obj.command_V;
             
             Kd = 20;
             Kp = 400;
             g=9.81; 
+            H = 0.8;
             ds = 1/obj.T;
             
             Cov_q_measured = eye(5) * obj.cov_q_measured;
@@ -147,13 +183,16 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
                     obj.l_stToe_kf = L_LeftToe_obs(2);
 %                     obj.sigma = 2.28^2;
                     obj.sigma = Cov_L_LTy;
+                    obj.l_ini = L_LeftToe_obs(2);
                 else
                     obj.rp_swT_ini = rp_LT;
                     obj.rv_swT_ini = rv_LT;
                     obj.l_stToe_kf = L_RightToe_obs(2);
 %                     obj.sigma = 2.28^2;
                     obj.sigma = Cov_L_RTy;
+                    obj.l_ini = L_RightToe_obs(2);
                 end
+                
             end
             
             
@@ -264,9 +303,10 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
 %             LBf = 32*(q(2)*dq(1))+LG(2); %%%%%%%% Notice! should use p_com(3) instead of q(2)!!!!!!!!!!!!!!!!!!!!!!
 %             LBf = 32*(q(2)*dq(1));
 %             pseudo_com_vx = L_stToe(2)/(32*p_com(3)(2));
-            pseudo_com_vx = L_stToe(2)/(32*(p_com(3)-p_stT(3)));
+%             pseudo_com_vx = L_stToe(2)/(32*(p_com(3)-p_stT(3)));
+            pseudo_com_vx = L_stToe(2)/(32*H);
 %             pseudo_com_vx = v_com(1);
-            l = sqrt(g/q(2));
+            l = sqrt(g/H);
             one_step_max_vel_gain = obj.T*l*0.2;
 %             dx0_next = rp_stT(1)*l*sinh(l*T_left) + rv_stT(1)*cosh(l*T_left);
             dx0_next = rp_stT(1)*l*sinh(l*T_left) + pseudo_com_vx*cosh(l*T_left);
@@ -277,9 +317,28 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
             
             vx0_next = rp_stT(1)*l*sinh(l*T_left) + v_com(1)*cosh(l*T_left);
             
+            %% Take Lc into consideration
+            Lc_coeff = get_Lc_coeff(obj.l_ini)';
+%             Lc_coeff = [671.0493 -184.7523    7.6934]';
+%             Lc_coeff = [-1917.92116143600,1567.57997569595,-296.580254117474,10.6511653210999];
+            Lc_coeff = [0, Lc_coeff];
+            Lc_est = polyval(Lc_coeff,t);
+            Lc_effect = Lc_effect_v1(t,obj.T,Lc_coeff,[obj.total_mass,g,rp_swT(3)]);
+            
+            dx0_next_withLc = rp_stT(1)*l*sinh(l*T_left) + pseudo_com_vx*cosh(l*T_left)+Lc_effect(2);
+            
+            %% Assume Lc = a*L+b
+            a = 2.41;
+            b = -81.95;
+            k1 = sqrt(g/H);
+            k2 = sqrt(a - 1);
+            dx0_next_special = rp_stT(1)*k1/k2*sin(k1*k2*T_left) + pseudo_com_vx*cos(k1*k2*T_left) + 1/k2^2*(1-cos(k1*k2*T_left))*(-b/(obj.total_mass*H));
+            
+            
+            
             w = pi/obj.T;
 %             H = 0.6 + 0.2*min(1,t_total/10);
-            H = 0.6;
+            
             CL = 0.1;
             
             ref_rp_swT_x = 1/2*(obj.rp_swT_ini(1) - x0_next)*cos(w*t) + 1/2*(obj.rp_swT_ini(1) + x0_next);
@@ -348,6 +407,11 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
                 obj.first_iteration_done = 1;
             end
 %% Data assignment
+            Data.Lc_effect = Lc_effect;
+            Data.dx0_next_withLc = dx0_next_withLc;
+            Data.Lc_est = Lc_est;
+            Data.LegSwitch = LegSwitch;
+
             Data.stanceLeg = stanceLeg;
             Data.lG = LG(2);
             Data.l_LeftToe = L_LeftToe(2);
@@ -377,6 +441,7 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
             
             Data.t_test = obj.t_test;
             Data.s = s;
+            Data.t = t;
             
             Data.p_LT = p_LT;
             Data.p_RT = p_RT;
@@ -408,6 +473,10 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
             Data.q = q;
             Data.dq = dq;
             Data.u = u;
+            
+            Data.dx0_next_special = dx0_next_special;
+            
+            Data.V_command = V;
             
             Data.q1 = q(1);
             Data.q2 = q(2);

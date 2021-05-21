@@ -1,4 +1,5 @@
-load('D:\Dropbox (DynamicLegLocomotion)\Robots\codes\SimpleModels\FiveLinkWalker\Simulation\PicsData\PD201220_ErrorTerms\SimData_201220.mat')
+% load('D:\Dropbox (DynamicLegLocomotion)\Robots\codes\SimpleModels\FiveLinkWalker\Simulation\PicsData\PD201220_ErrorTerms\SimData_201220.mat')
+%%
 q_array = reshape(true_q.Data,7,[]);
 dq_array = reshape(true_dq.Data,7,[]);
 F = GRF.Data';
@@ -7,8 +8,11 @@ t = Data.s.Time;
 
 start_time = 11.25; % Right stance
 end_time = 11.55;
-start_index = find(t == start_time);
-end_index = find(t == end_time);
+% start_index = find(t == start_time);
+% end_index = find(t == end_time);
+
+start_index = 44505;
+end_index = 45121;
 % t = t(start_index:end_index);
 t_array = t(start_index:end_index);
 
@@ -174,7 +178,7 @@ end
 % figure;plot(t_array,p_LT_array)
 % figure;plot(t_array,tau_array)
 % 
-% figure;plot(t_array,non_int_array)
-% figure;plot(t_array,tau_int_array)
-% figure;plot(t_array,LCOM_int_array)
+figure;plot(t_array,non_int_array)
+figure;plot(t_array,tau_int_array)
+figure;plot(t_array,LCOM_int_array)
 
