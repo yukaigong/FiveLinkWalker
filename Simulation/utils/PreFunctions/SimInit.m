@@ -14,10 +14,12 @@
 base_rot = 0;
 dbase_rot = 0;
 
-q1L = -pi/4-base_rot; % first number is the desired world frame angle
-q2L = pi/2;
-q1R = -pi/6-base_rot;
-q2R = pi/1.5;
+q2L = 90/180*pi;
+q1L = -q2L/2-base_rot; % first number is the desired world frame angle
+
+q2R = 120/180*pi;
+q1R = -q2R/2-base_rot;
+
 
 % q1R = -pi/4-base_rot; % first number is the desired world frame angle
 % q2R = pi/2;

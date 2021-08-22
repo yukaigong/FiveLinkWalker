@@ -87,4 +87,7 @@ Data.dq4 = 0;
 Data.dq5 = 0;
 Data.dq6 = 0;
 Data.dq7 = 0;
+
+Data.s_ps = 0;
+Data.s_pf = 0;
 end
