@@ -9,11 +9,16 @@ classdef FLW_Controller_running_2108 <matlab.System & matlab.system.mixin.Propag
        total_mass = 32;
        rp_swT_ini = zeros(3,1);
        rv_swT_ini = zeros(3,1);
+       rp_stT_ini = zeros(3,1);
+       rv_stT_ini = zeros(3,1);     
+       v_com_ini = zeros(3,1);
        
        t0_ps = 0;
        t0_pf = 0;
        
        rpx_b3 = 0; % This is foot placement
+       
+       initialized = 0;
        
        
     end % properties
@@ -25,9 +30,9 @@ classdef FLW_Controller_running_2108 <matlab.System & matlab.system.mixin.Propag
             Data = Construct_Data();
             % Let the output be torso angle, com height and delta x,delta z of swing
             % feet and com. delta = p_com - p_swfeet.
-            T_ps = 0.3; % stance phase time
-            T_pf = 0.1; % swing phase time
-            V = 3; % Desired velocity at the end of a step
+            T_ps = 0.1; % stance phase time
+            T_pf = 0.2; % swing phase time
+            V = 0; % Desired velocity at the end of a step
             H_nominal = 0.55;
             g=9.81; 
             ds_ps = 1/T_ps;
@@ -36,8 +41,8 @@ classdef FLW_Controller_running_2108 <matlab.System & matlab.system.mixin.Propag
             
             q = x(1:7);
             dq = x(8:14);
-            Kd = 10;
-            Kp = 200;
+            Kd = 40;
+            Kp = 400;
             if obj.stanceLeg == -1
                 GRF_sw_z = GRF(6);
                 GRF_st_z = GRF(3);
@@ -88,19 +93,40 @@ classdef FLW_Controller_running_2108 <matlab.System & matlab.system.mixin.Propag
             L_RightToe_vg = obj.total_mass*cross(rp_RT,v_com);
             
             
-            if (GRF_sw_z >= 100 && s_pf>0.5) || s_pf>1.5
+            if (GRF_sw_z >= 100 && s_pf>0.5) || s_pf>1.5 
                 obj.stanceLeg = -obj.stanceLeg;
                 obj.t0_ps = t_total;
                 obj.phase = 1;
                 if obj.stanceLeg == -1
                     obj.rp_swT_ini = rp_RT;
                     obj.rv_swT_ini = rv_RT;
+                    obj.rp_stT_ini = rp_LT;
+                    obj.rv_stT_ini = rv_LT;
+                    obj.v_com_ini = v_com;
                 else
                     obj.rp_swT_ini = rp_LT;
                     obj.rv_swT_ini = rv_LT;
+                    obj.rp_stT_ini = rp_RT;
+                    obj.rv_stT_ini = rv_RT;
+                    obj.v_com_ini = v_com;
                 end
             end
-            
+            if obj.initialized == 0
+                obj.initialized = 1;
+                if obj.stanceLeg == -1
+                    obj.rp_swT_ini = rp_RT;
+                    obj.rv_swT_ini = rv_RT;
+                    obj.rp_stT_ini = rp_LT;
+                    obj.rv_stT_ini = rv_LT;
+                    obj.v_com_ini = v_com;
+                else
+                    obj.rp_swT_ini = rp_LT;
+                    obj.rv_swT_ini = rv_LT;
+                    obj.rp_stT_ini = rp_RT;
+                    obj.rv_stT_ini = rv_RT;
+                    obj.v_com_ini = v_com;
+                end
+            end
 %             if (GRF_st_z <20 && s_ps >0.5) || s_ps > 1.1
             if s_ps > 1
                 obj.t0_pf = t_total;
@@ -164,15 +190,23 @@ classdef FLW_Controller_running_2108 <matlab.System & matlab.system.mixin.Propag
             end
             
             %% Some parameters for wrong, in vertical direction
-            p0 = H_nominal + 0.05;
-            v0 = -g*T_pf/2;
+%             p0 = H_nominal + 0.05;
+%             v0 = -g*T_pf/2;
+            p0 = obj.rp_stT_ini(3);
+%             v0 = obj.rv_stT_ini(3);
+            v0 = obj.v_com_ini(3);
             a0 = -3;
                 
-            pf = p0; % Make the vertical movement symmetric about time
-            vf = -v0;
+            pf = H_nominal + 0.05; % Make the vertical movement symmetric about time
+            vf = g*T_pf/2;
             af = -9.8;
-                
-            alpha_m = H_nominal - 0.05; % This decide the middle ones of bezier coefficients
+            
+            j_endpoint = 1000; % j is jerk, time derivative of acceleration
+            j0 = j_endpoint;
+            jf = -j_endpoint;
+            
+            
+%             alpha_m = H_nominal - 0.05; % This decide the middle ones of bezier coefficients
             
             H_sw_peak = 0.4; % The closest distance from swing foot to CoM
             
@@ -193,7 +227,7 @@ classdef FLW_Controller_running_2108 <matlab.System & matlab.system.mixin.Propag
                 Ly_a2 = obj.total_mass * H_nominal * l * sinh(l*T_left)*rp_stT(1) + L_stToe(2) * cosh(l*T_left);
                 rpx_a2 = cosh(l*T_left)*rp_stT(1) + 1/(obj.total_mass*H_nominal*l)*sinh(l*T_left) * L_stToe(2);
                 
-                Ly_goal_adjusted = median([Ly_a2 - 1.5*H_nominal*obj.total_mass, Ly_goal, Ly_a2 + 1.5*H_nominal*obj.total_mass]);
+                Ly_goal_adjusted = median([Ly_a2 - 0.5*H_nominal*obj.total_mass, Ly_goal, Ly_a2 + 0.5*H_nominal*obj.total_mass]);
                 
                 obj.rpx_b3 = (Ly_goal_adjusted - (Ly_a2 + obj.total_mass*rpx_a2*vf)*cosh(l*T_ps))/...
                                (obj.total_mass*H_nominal*l*sinh(l*T_ps)+obj.total_mass*vf*cosh(l*T_ps));     
@@ -223,11 +257,14 @@ classdef FLW_Controller_running_2108 <matlab.System & matlab.system.mixin.Propag
                 alpha1 = alpha0 + v0/(n*ds_ps);
                 alpha2 = 2*alpha1 - alpha0 + a0/(n*(n-1)*ds_ps^2);
                 
-                alpha6 = pf;
-                alpha5 = alpha6 - vf/(n*ds_ps);
-                alpha4 = 2*alpha5 - alpha6 + af/(n*(n-1)*ds_ps^2);
+                alpha7 = pf;
+                alpha6 = alpha7 - vf/(n*ds_ps);
+                alpha5 = 2*alpha6 - alpha7 + af/(n*(n-1)*ds_ps^2);
                 
-                alpha =[alpha0, alpha1, alpha2, 0.55, alpha_m, alpha_m, alpha4, alpha5, alpha6];
+                alpha3 =  j0/(n*(n-1)*(n-2)*ds_ps^3) + 3*alpha2 - 3*alpha1 + alpha0;
+                alpha4 =  -jf/(n*(n-1)*(n-2)*ds_ps^3) + alpha7 - 3*alpha6 + 3*alpha5;
+                
+                alpha =[alpha0, alpha1, alpha2, alpha3, alpha4, alpha5, alpha6, alpha7];
 
                 
                 ref_rp_stT_z = bezier(alpha,s_ps);
@@ -311,6 +348,7 @@ classdef FLW_Controller_running_2108 <matlab.System & matlab.system.mixin.Propag
             
             Data.hr = hr;
             Data.dhr = dhr;
+            Data.ddhr = ddhr;
             Data.h0 = h0;
             Data.dh0 = dh0;
             

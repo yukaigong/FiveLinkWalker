@@ -67,6 +67,7 @@ Data.u = zeros(4,1);
 
 Data.hr = zeros(4,1);
 Data.dhr = zeros(4,1);
+Data.ddhr = zeros(4,1);
 Data.h0 = zeros(4,1);
 Data.dh0 = zeros(4,1);
 
