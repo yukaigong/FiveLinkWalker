@@ -15,9 +15,9 @@ af = -9.8;
 
 p_half = 0.5;
 
-j_endpoint = 30; % j is jerk, time derivative of acceleration
-j0 = j_endpoint;
-jf = -j_endpoint;
+% j_endpoint = 30; % j is jerk, time derivative of acceleration
+% j0 = j_endpoint;
+% jf = -j_endpoint;
 
 
 alpha0 = p0;

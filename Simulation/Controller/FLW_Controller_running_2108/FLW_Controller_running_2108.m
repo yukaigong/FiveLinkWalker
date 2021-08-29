@@ -20,6 +20,7 @@ classdef FLW_Controller_running_2108 <matlab.System & matlab.system.mixin.Propag
        
        initialized = 0;
        
+       alpha = zeros(1,9);
        
     end % properties
     
@@ -27,22 +28,24 @@ classdef FLW_Controller_running_2108 <matlab.System & matlab.system.mixin.Propag
     methods (Access = protected)
         
         function [u, Data] = stepImpl(obj,x,t_total,GRF)
+            coder.extrinsic('quadprog')
             Data = Construct_Data();
             % Let the output be torso angle, com height and delta x,delta z of swing
             % feet and com. delta = p_com - p_swfeet.
-            T_ps = 0.1; % stance phase time
-            T_pf = 0.2; % swing phase time
-            V = 0; % Desired velocity at the end of a step
+            T_ps = 0.15; % stance phase time
+            T_pf = 0.2; % flight phase time
+            V = 5; % Desired velocity at the end of a step
             H_nominal = 0.55;
             g=9.81; 
             ds_ps = 1/T_ps;
             ds_pf = 1/T_pf;
             Ly_goal = V*H_nominal*obj.total_mass;
             
-            q = x(1:7);
-            dq = x(8:14);
-            Kd = 40;
-            Kp = 400;
+            q = x(1:7);          dq = x(8:14);
+%             Kd = 40;
+%             Kp = 400;
+            Kd = diag([10,20,100,100]);
+            Kp = diag([400,200,1000,1000]);
             if obj.stanceLeg == -1
                 GRF_sw_z = GRF(6);
                 GRF_st_z = GRF(3);
@@ -92,8 +95,9 @@ classdef FLW_Controller_running_2108 <matlab.System & matlab.system.mixin.Propag
             L_LeftToe_vg = obj.total_mass*cross(rp_LT,v_com);
             L_RightToe_vg = obj.total_mass*cross(rp_RT,v_com);
             
-            
+            switch_f2s = 0;
             if (GRF_sw_z >= 100 && s_pf>0.5) || s_pf>1.5 
+                switch_f2s = 1;
                 obj.stanceLeg = -obj.stanceLeg;
                 obj.t0_ps = t_total;
                 obj.phase = 1;
@@ -113,6 +117,7 @@ classdef FLW_Controller_running_2108 <matlab.System & matlab.system.mixin.Propag
             end
             if obj.initialized == 0
                 obj.initialized = 1;
+                switch_f2s = 1;
                 if obj.stanceLeg == -1
                     obj.rp_swT_ini = rp_RT;
                     obj.rv_swT_ini = rv_RT;
@@ -195,7 +200,7 @@ classdef FLW_Controller_running_2108 <matlab.System & matlab.system.mixin.Propag
             p0 = obj.rp_stT_ini(3);
 %             v0 = obj.rv_stT_ini(3);
             v0 = obj.v_com_ini(3);
-            a0 = -3;
+            a0 = 0;
                 
             pf = H_nominal + 0.05; % Make the vertical movement symmetric about time
             vf = g*T_pf/2;
@@ -252,24 +257,45 @@ classdef FLW_Controller_running_2108 <matlab.System & matlab.system.mixin.Propag
                 ref_ra_swT_z = 0;
                 
                 % Design CoM trajectory during stance phase
-                n=8;
-                alpha0 = p0;
-                alpha1 = alpha0 + v0/(n*ds_ps);
-                alpha2 = 2*alpha1 - alpha0 + a0/(n*(n-1)*ds_ps^2);
+                if switch_f2s == 1 % Decide the trajectory when entering stance phase
+                    
+                    n=8; % m is the degree of bezier, there are n+1 bezier coefficient.
+                    
+                    alpha = zeros(1,n+1);
+                    alpha = zeros(1,n+1);
+                    alpha_0 = p0;
+                    alpha_1 = alpha_0 + v0/(n*ds_ps);
+                    alpha_2 = 2*alpha_1 - alpha_0 + a0/(n*(n-1)*ds_ps^2);
+                    
+                    alpha_n = pf;
+                    alpha_n_1 = alpha_n - vf/(n*ds_ps);
+                    alpha_n_2 = 2*alpha_n_1 - alpha_n + af/(n*(n-1)*ds_ps^2);
+                    
+                    alpha_3 =  j0/(n*(n-1)*(n-2)*ds_ps^3) + 3*alpha_2 - 3*alpha_1 + alpha_0;
+                    alpha_n_3 =  -jf/(n*(n-1)*(n-2)*ds_ps^3) + alpha_n - 3*alpha_n_1 + 3*alpha_n_2;
+                    
+                    % alpha([1:4, end - 3: end]) = [alpha_0,alpha_1,alpha_2,alpha_3,alpha_n_3,alpha_n_2,alpha_n_1,alpha_n];
+                    alpha([1:3, end - 2: end]) = [alpha_0,alpha_1,alpha_2,alpha_n_2,alpha_n_1,alpha_n];
+                    
+                    Bezier_am= bezier_matrix_derivative(n,2,0.1:0.1:0.9); % acceleration matrix, row corresponds to coefficients, column corresponds to s.
+                    % Setting up the linprog/quadprog problem
+                    % inequality constraint: Bezier_am * alpha >
+                    % min_acceleration on all sample s
+                    a_min = -0;
+                    b = Bezier_am(:, [1:3,end - 2:end])*alpha([1:3, end - 2: end])';
+                    b = b*ds_ps^2 - a_min;
+                    A = - Bezier_am(:,4:end -3)*ds_ps^2;
+                    alpha_middle_num = n+1-6;
+                    % H is used to calculate the covariance of alpha middle
+                    H =  - ones(alpha_middle_num, alpha_middle_num)+diag(alpha_middle_num*ones(alpha_middle_num,1));
+                    f = zeros(alpha_middle_num,1);
+                    alpha(4:end-3) = quadprog(H,f,A,b)';
+                    obj.alpha = alpha;
+                end
                 
-                alpha7 = pf;
-                alpha6 = alpha7 - vf/(n*ds_ps);
-                alpha5 = 2*alpha6 - alpha7 + af/(n*(n-1)*ds_ps^2);
-                
-                alpha3 =  j0/(n*(n-1)*(n-2)*ds_ps^3) + 3*alpha2 - 3*alpha1 + alpha0;
-                alpha4 =  -jf/(n*(n-1)*(n-2)*ds_ps^3) + alpha7 - 3*alpha6 + 3*alpha5;
-                
-                alpha =[alpha0, alpha1, alpha2, alpha3, alpha4, alpha5, alpha6, alpha7];
-
-                
-                ref_rp_stT_z = bezier(alpha,s_ps);
-                ref_rv_stT_z = dbezier(alpha,s_ps)*ds_ps;
-                ref_ra_stT_z = d2bezier(alpha,s_ps)*ds_ps^2;
+                ref_rp_stT_z = bezier(obj.alpha,s_ps);
+                ref_rv_stT_z = dbezier(obj.alpha,s_ps)*ds_ps;
+                ref_ra_stT_z = d2bezier(obj.alpha,s_ps)*ds_ps^2;
             else
                 
                 ref_rp_swT_x = obj.rpx_b3;
@@ -329,6 +355,7 @@ classdef FLW_Controller_running_2108 <matlab.System & matlab.system.mixin.Propag
                 u = (Jh*S*Me^-1*Be)^-1*(-Kd*dy-Kp*y+ddhr+Jh*S*Me^-1*He);
             else
                 u = (Jh*M^-1*B)^-1*(-Kd*dy-Kp*y+ddhr+Jh*M^-1*H);
+                
             end
 %             u = 10*ones(4,1)*sin(t);
             
