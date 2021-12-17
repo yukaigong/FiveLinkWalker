@@ -94,7 +94,7 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
             Kd = 20;
             Kp = 400;
             g=9.81; 
-            H = 0.8;
+            H = 0.6;
             ds = 1/obj.T;
             
             Cov_q_measured = eye(5) * obj.cov_q_measured;
