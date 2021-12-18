@@ -91,10 +91,10 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
             obj.command_V = (1-0.002)*obj.command_V + (0.002)*V;
             V = obj.command_V;
             
-            Kd = 20;
-            Kp = 400;
+            Kd = 60;
+            Kp = 1000;
             g=9.81; 
-            H = 0.6;
+            H = 0.5;
             ds = 1/obj.T;
             
             Cov_q_measured = eye(5) * obj.cov_q_measured;
@@ -351,8 +351,16 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
             ref_rp_swT_z= 4*CL*(s-0.5)^2+(H-CL);
             ref_rv_swT_z = 8*CL*(s-0.5)*ds;
             ref_ra_swT_z = 8*CL*ds^2;
-
-
+            
+            
+            ref_rp_stT_z= H ;
+            ref_rv_stT_z = 0;
+            ref_ra_stT_z = 0;
+%             amp_temp = 0.02;
+%             omega_temp = 2*pi;
+%             ref_rp_stT_z= H + amp_temp*sin(omega_temp*s-pi/2)+amp_temp;
+%             ref_rv_stT_z = omega_temp*ds*amp_temp*cos(omega_temp*s-pi/2);
+%             ref_ra_stT_z = -(omega_temp*ds)^2*amp_temp*sin(omega_temp*s-pi/2);
             
             M = InertiaMatrix(q);
             C = CoriolisTerm(q,dq);
@@ -380,10 +388,10 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
             h0 = [q(3);rp_stT(3);rp_swT([1,3])];
             dh0 = Jh*dq;
             
-            hr= [0;H;ref_rp_swT_x;ref_rp_swT_z];
+            hr= [0;ref_rp_stT_z;ref_rp_swT_x;ref_rp_swT_z];
 %             hr= [sqrt(dxf_next_goal)/5;H;ref_rp_swT_x;ref_rp_swT_z];
-            dhr = [0;0;ref_rv_swT_x;ref_rv_swT_z];
-            ddhr = [0;0;ref_ra_swT_x;ref_ra_swT_z];
+            dhr = [0;ref_rv_stT_z;ref_rv_swT_x;ref_rv_swT_z];
+            ddhr = [0;ref_ra_stT_z;ref_ra_swT_x;ref_ra_swT_z];
             
             Me = [M -Jg';Jg,zeros(2,2)];
             He = [C+G;dJg*dq];

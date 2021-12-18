@@ -26,20 +26,31 @@ q1R = -q2R/2-base_rot;
 % q1L = -pi/6-base_rot;
 % q2L = pi/1.5;
 
-dq1L = 0-dbase_rot;
-dq2L = 0;
+% dq1L = 0-dbase_rot;
+% dq2L = 0;
 dq1R = 0-dbase_rot;
 dq2R = 0;
+dx = 0;
+dz = 0;
 
+% Initial left foot position should be at zero
 base_xyz = -p_LeftToe([0;0;base_rot;q1L;q2L;q1R;q2R]);
-dbase_xyz = -Jp_LeftToe([0;0;base_rot;q1L;q2L;q1R;q2R])*[0;0;dbase_rot;dq1L;dq2L;dq1R;dq2R];
-% base_xyz = -p_RightToe([0;0;base_rot;q1L;q2L;q1R;q2R]);
-% dbase_xyz = -Jp_RightToe([0;0;base_rot;q1L;q2L;q1R;q2R])*[0;0;dbase_rot;dq1L;dq2L;dq1R;dq2R];
+% dbase_xyz = -Jp_LeftToe([0;0;base_rot;q1L;q2L;q1R;q2R])*[0.5;0;dbase_rot;dq1L;dq2L;dq1R;dq2R];
+
+% Given desired initial longitudinal velocity, decide the left leg joints
+% velocity
+J = Jp_LeftToe([0; 0; base_rot; q1L; q2L; q1R; q2R]);
+J_left_leg = J([1,3],[4,5]); % left leg is the initial stance leg
+J_others = J([1,3],[1,2,3,6,7]);
+
+dq_left_leg = J_left_leg^-1*(-J_others * [dx; dz; dbase_rot; dq1R; dq2R]);
+dq1L = dq_left_leg(1);
+dq2L = dq_left_leg(2);
 
 base_xz = base_xyz([1,3]);
-dbase_xz = dbase_xyz([1,3]);
+
 IC = [base_xz;base_rot;q1L;q2L;q1R;q2R;...
-    dbase_xz;dbase_rot;dq1L;dq2L;dq1R;dq2R];
+    dx;dz;dbase_rot;dq1L;dq2L;dq1R;dq2R];
 
 % IC(2) = 10;
 
