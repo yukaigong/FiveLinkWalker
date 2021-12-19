@@ -64,6 +64,7 @@ Data.pseudo_com_vx = 0;
 Data.q = zeros(7,1);
 Data.dq = zeros(7,1);
 Data.u = zeros(4,1);
+Data.u_ankle = 0;
 
 Data.hr = zeros(4,1);
 Data.dhr = zeros(4,1);

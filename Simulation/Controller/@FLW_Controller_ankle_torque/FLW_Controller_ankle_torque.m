@@ -1,6 +1,6 @@
 %Yukai controller.
 
-classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matlab.system.mixin.SampleTime %#codegen
+classdef FLW_Controller_ankle_torque <matlab.System & matlab.system.mixin.Propagates & matlab.system.mixin.SampleTime %#codegen
     % PROTECTED PROPERTIES ====================================================
     properties
         cov_q_measured;
@@ -40,7 +40,7 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
     % PROTECTED METHODS =====================================================
     methods (Access = protected)
         
-        function [u, Data] = stepImpl(obj,EstStates,t_total)
+        function [u, u_ankle, Data] = stepImpl(obj,EstStates,t_total)
             
             Data = Construct_Data();
             
@@ -405,7 +405,8 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
             u = (Jh*S*Me^-1*Be)^-1*(-Kd*dy-Kp*y+ddhr+Jh*S*Me^-1*He);
 %             u = 10*ones(4,1)*sin(t);
 %             u = zeros(4,1);
-            
+%             u_ankle = -100*(s-0.5);
+            u_ankle = 30*sin(2*pi*s);
 %%          
             Data.t_diff = t_total - obj.t_prev;
             obj.t_prev = t_total;
@@ -481,6 +482,7 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
             Data.q = q;
             Data.dq = dq;
             Data.u = u;
+            Data.u_ankle = u_ankle;
             
             Data.dx0_next_special = dx0_next_special;
             
@@ -520,34 +522,40 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
             
         end % getInputNamesImpl      
         
-        function [name_1, name_2] = getOutputNamesImpl(~)
+        function [name_1, name_2, name_3] = getOutputNamesImpl(~)
             %GETOUTPUTNAMESIMPL Return output port names for System block
             name_1 = 'u';
-            name_2 = 'Data';
+            name_2 = 'u_ankle';
+            name_3 = 'Data';
+            
         end % getOutputNamesImpl
         
         % PROPAGATES CLASS METHODS ============================================
-        function [u, Data] = getOutputSizeImpl(~)
+        function [u, u_ankle, Data] = getOutputSizeImpl(~)
             %GETOUTPUTSIZEIMPL Get sizes of output ports.
             u = [4, 1];
+            u_ankle = [1, 1];
             Data = [1, 1];
         end % getOutputSizeImpl
         
-        function [u, Data] = getOutputDataTypeImpl(~)
+        function [u, u_ankle, Data] = getOutputDataTypeImpl(~)
             %GETOUTPUTDATATYPEIMPL Get data types of output ports.
             u = 'double';
+            u_ankle = 'double';
             Data = 'cassieDataBus';
         end % getOutputDataTypeImpl
         
-        function [u, Data] = isOutputComplexImpl(~)
+        function [u, u_ankle, Data] = isOutputComplexImpl(~)
             %ISOUTPUTCOMPLEXIMPL Complexity of output ports.
             u = false;
+            u_ankle = false;
             Data = false;
         end % isOutputComplexImpl
         
-        function [u, Data] = isOutputFixedSizeImpl(~)
+        function [u, u_ankle, Data] = isOutputFixedSizeImpl(~)
             %ISOUTPUTFIXEDSIZEIMPL Fixed-size or variable-size output ports.
             u = true;
+            u_ankle = true;
             Data = true;
         end % isOutputFixedSizeImpl        
     end % methods
