@@ -32,9 +32,35 @@ classdef FLW_Controller_running_2108 <matlab.System & matlab.system.mixin.Propag
             Data = Construct_Data();
             % Let the output be torso angle, com height and delta x,delta z of swing
             % feet and com. delta = p_com - p_swfeet.
-            T_ps = 0.15; % stance phase time
-            T_pf = 0.2; % flight phase time
-            V = 5; % Desired velocity at the end of a step
+%             T_ps = 0.15; % stance phase time
+%             T_pf = 0.2; % flight phase time
+
+            % Hop in place ( change Ly_goal_adjusted)
+            T_ps_start = 0.2;
+            T_ps_end = 0.2;
+            T_ps_end_time = 8;
+            
+            T_pf_start = 0.5;
+            T_pf_end = 0.5;
+            T_pf_end_time = 8;
+            
+            T_ps = T_ps_start + min(1,t_total/T_ps_end_time)*(T_ps_end - T_ps_start);
+            T_pf = T_pf_start + min(1,t_total/T_pf_end_time)*(T_pf_end - T_pf_start);
+            V = -0.1; % Desired velocity at the end of a step
+            
+%             % Run Forward ( change Ly_goal_adjusted)
+%             T_ps_start = 0.15;
+%             T_ps_end = 0.15;
+%             T_ps_end_time = 8;
+%             
+%             T_pf_start = 0.2;
+%             T_pf_end = 0.2;
+%             T_pf_end_time = 8;
+%             
+%             T_ps = T_ps_start + min(1,t_total/T_ps_end_time)*(T_ps_end - T_ps_start);
+%             T_pf = T_pf_start + min(1,t_total/T_pf_end_time)*(T_pf_end - T_pf_start);
+%             V = 4; % Desired velocity at the end of a step
+            
             H_nominal = 0.55;
             g=9.81; 
             ds_ps = 1/T_ps;
@@ -200,7 +226,7 @@ classdef FLW_Controller_running_2108 <matlab.System & matlab.system.mixin.Propag
             p0 = obj.rp_stT_ini(3);
 %             v0 = obj.rv_stT_ini(3);
             v0 = obj.v_com_ini(3);
-            a0 = 0;
+            a0 = 10;
                 
             pf = H_nominal + 0.05; % Make the vertical movement symmetric about time
             vf = g*T_pf/2;
@@ -232,12 +258,15 @@ classdef FLW_Controller_running_2108 <matlab.System & matlab.system.mixin.Propag
                 Ly_a2 = obj.total_mass * H_nominal * l * sinh(l*T_left)*rp_stT(1) + L_stToe(2) * cosh(l*T_left);
                 rpx_a2 = cosh(l*T_left)*rp_stT(1) + 1/(obj.total_mass*H_nominal*l)*sinh(l*T_left) * L_stToe(2);
                 
-                Ly_goal_adjusted = median([Ly_a2 - 0.5*H_nominal*obj.total_mass, Ly_goal, Ly_a2 + 0.5*H_nominal*obj.total_mass]);
-                
+% %                 Ly_goal_adjusted = median([Ly_a2 - 0.6*H_nominal*obj.total_mass, Ly_goal, Ly_a2 + 0.6*H_nominal*obj.total_mass]);
+%                 Ly_goal_adjusted = median([0.7*Ly_a2, Ly_goal, 1.3*Ly_a2]);
+                Ly_goal_adjusted = Ly_goal;
                 obj.rpx_b3 = (Ly_goal_adjusted - (Ly_a2 + obj.total_mass*rpx_a2*vf)*cosh(l*T_ps))/...
-                               (obj.total_mass*H_nominal*l*sinh(l*T_ps)+obj.total_mass*vf*cosh(l*T_ps));     
+                               (obj.total_mass*H_nominal*l*sinh(l*T_ps)+obj.total_mass*vf*cosh(l*T_ps));
+%                 obj.rpx_b3 = median([obj.rpx_b3,0.02,-0.3]);
             else
 %                 rpx_b3 = 0;
+                Ly_goal_adjusted =0;
             end
             
             %% Design reference trajectory
@@ -281,7 +310,8 @@ classdef FLW_Controller_running_2108 <matlab.System & matlab.system.mixin.Propag
                     % Setting up the linprog/quadprog problem
                     % inequality constraint: Bezier_am * alpha >
                     % min_acceleration on all sample s
-                    a_min = -0;
+%                     a_min = -0;
+                    a_min = 0;
                     b = Bezier_am(:, [1:3,end - 2:end])*alpha([1:3, end - 2: end])';
                     b = b*ds_ps^2 - a_min;
                     A = - Bezier_am(:,4:end -3)*ds_ps^2;
@@ -354,6 +384,7 @@ classdef FLW_Controller_running_2108 <matlab.System & matlab.system.mixin.Propag
                 S = [eye(7),zeros(7,2)]; % S is used to seperate ddq with Fg;
                 u = (Jh*S*Me^-1*Be)^-1*(-Kd*dy-Kp*y+ddhr+Jh*S*Me^-1*He);
             else
+%                 ddhr(1) = 50;
                 u = (Jh*M^-1*B)^-1*(-Kd*dy-Kp*y+ddhr+Jh*M^-1*H);
                 
             end
@@ -366,11 +397,17 @@ classdef FLW_Controller_running_2108 <matlab.System & matlab.system.mixin.Propag
             Data.l_RightToe = L_RightToe(2);
             Data.l_LeftToe_vg = L_LeftToe_vg(2);
             Data.l_RightToe_vg = L_RightToe_vg(2);
-            
+            if obj.phase == 1
+                Data.l_stToe = L_stToe(2);
+            else
+                Data.l_stToe = 0;
+            end
 %             Data.dx0_next = dx0_next;
 %             Data.x0_next = x0_next;
 %             Data.dxf_next_goal = dxf_next_goal;
-            
+            Data.Ly_goal_adjusted = Ly_goal_adjusted;
+            Data.p_stT = p_stT;
+            Data.v_stT = v_stT;
             Data.rp_LT = rp_LT;
             
             Data.hr = hr;

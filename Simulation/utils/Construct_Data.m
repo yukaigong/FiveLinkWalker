@@ -18,6 +18,7 @@ Data.dx0_next = 0;
 Data.x0_next = 0;
 Data.dxf_next_goal = 0;
 Data.vx0_next = 0;
+Data.Ly_goal_adjusted = 0;
 
 Data.dx0_next_special = 0;
 

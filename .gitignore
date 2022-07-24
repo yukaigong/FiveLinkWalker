@@ -2,7 +2,7 @@
 *.asv
 **/Build/*
 **/PicsData/*
-
+**/Video/*
 *_grt_rtw/
 *slprj/
 *sfprj/
