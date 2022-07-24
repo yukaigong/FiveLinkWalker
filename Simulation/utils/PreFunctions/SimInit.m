@@ -30,7 +30,7 @@ q1R = -q2R/2-base_rot;
 % dq2L = 0;
 dq1R = 0-dbase_rot;
 dq2R = 0;
-dx = 0;
+dx = 0.5;
 dz = 0;
 
 % Initial left foot position should be at zero

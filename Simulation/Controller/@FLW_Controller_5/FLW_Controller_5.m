@@ -66,7 +66,7 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
                 V = 1.5;
             end
             if t_total>20
-                V = 2;
+                V = 2.2;
             end
             if t_total>25
                 V = 2/5*max([0,(30-t_total)]);
@@ -88,11 +88,12 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
 % %                 V = 2/2*max([0,(28-t_total)]);
 %                 V = 0;
 %             end
+            V = 0;
             obj.command_V = (1-0.002)*obj.command_V + (0.002)*V;
             V = obj.command_V;
             
-            Kd = 60;
-            Kp = 1000;
+            Kd = 40;
+            Kp = 600;
             g=9.81; 
             H = 0.6;
             ds = 1/obj.T;
@@ -298,6 +299,7 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
             
             
             
+            fp_ratio = 1;
             
             T_left = obj.T - t;
 %             LBf = 32*(q(2)*dq(1))+LG(2); %%%%%%%% Notice! should use p_com(3) instead of q(2)!!!!!!!!!!!!!!!!!!!!!!
@@ -311,7 +313,8 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
 %             dx0_next = rp_stT(1)*l*sinh(l*T_left) + rv_stT(1)*cosh(l*T_left);
             dx0_next = rp_stT(1)*l*sinh(l*T_left) + pseudo_com_vx*cosh(l*T_left);
 %             dxf_next_goal = median([dx0_next + one_step_max_vel_gain, dx0_next - one_step_max_vel_gain, V]);
-            dxf_next_goal = V;
+            dxf_next_goal = dx0_next + fp_ratio*(V - dx0_next);
+            
             x0_next = (dxf_next_goal - dx0_next*cosh(l*obj.T))/(l*sinh(l*obj.T));
             % x0_next is the desired relative position of COM to stance foot in the beginning of next step,(at this step it is still swing foot) so that COM velocity can be V at time obj.T
             
@@ -353,14 +356,14 @@ classdef FLW_Controller_5 <matlab.System & matlab.system.mixin.Propagates & matl
             ref_ra_swT_z = 8*CL*ds^2;
             
             
-            ref_rp_stT_z= H ;
-            ref_rv_stT_z = 0;
-            ref_ra_stT_z = 0;
-%             amp_temp = 0.02;
-%             omega_temp = 2*pi;
-%             ref_rp_stT_z= H + amp_temp*sin(omega_temp*s-pi/2)+amp_temp;
-%             ref_rv_stT_z = omega_temp*ds*amp_temp*cos(omega_temp*s-pi/2);
-%             ref_ra_stT_z = -(omega_temp*ds)^2*amp_temp*sin(omega_temp*s-pi/2);
+%             ref_rp_stT_z= H ;
+%             ref_rv_stT_z = 0;
+%             ref_ra_stT_z = 0;
+            amp_temp = 0;
+            omega_temp = 2*pi;
+            ref_rp_stT_z= H + amp_temp*sin(omega_temp*s-pi/2)+amp_temp;
+            ref_rv_stT_z = omega_temp*ds*amp_temp*cos(omega_temp*s-pi/2);
+            ref_ra_stT_z = -(omega_temp*ds)^2*amp_temp*sin(omega_temp*s-pi/2);
             
             M = InertiaMatrix(q);
             C = CoriolisTerm(q,dq);
