@@ -74,7 +74,7 @@ plot(t_steps{i},L_predict1_steps{i}/(m*H),'-.','LineWidth',2);
 grid on
 axis([0,0.3,0.8,2.5])
 xlabel('\textbf{Time (s)}','Interpreter','latex')
-ylabel('{\boldmath$\frac{L^y}{mH}$} \textbf{(m/s)}','Interpreter','latex')
+ylabel('{\boldmath$\frac{L}{mH}$} \textbf{(m/s)}','Interpreter','latex')
 
 f2 = figure;
 set(gcf, 'Position',  [100, 100, 250, 200])
@@ -85,10 +85,14 @@ plot(t_steps{i},vc_predict1_steps{i},'-.','LineWidth',2);
 grid on
 axis([0,0.3,0.8,2.5])
 xlabel('\textbf{Time (s)}','Interpreter','latex')
-ylabel('{\boldmath$v^x_{\rm CoM}$} \textbf{(m/s)}','Interpreter','latex')
+ylabel('{\boldmath$v_{\rm c}$} \textbf{(m/s)}','Interpreter','latex')
 
 % saveas(f1,[root_dir '/PicsData/PD210412_paper/L_predict_FLW.png'])
 % saveas(f2,[root_dir '/PicsData/PD210412_paper/vc_predict_FLW.png'])
+
+pd_dir_2 = 'D:\Dropbox (DynamicLegLocomotion)\MyManuscript\Paper\2022_ASME\tiff\MATLAB\';
+print(f1,[pd_dir_2, 'L_predict_FLW.tif'],'-dtiff','-r1000')
+print(f2,[pd_dir_2, 'vc_predict_FLW.tif'],'-dtiff','-r1000')
 
 %%
 

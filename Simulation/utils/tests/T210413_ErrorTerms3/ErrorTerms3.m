@@ -85,6 +85,7 @@ plot(t_steps{i},error_no_int{i},'LineWidth',2)
 grid on
 axis([0,0.3,-1.2,1])
 xlabel('\textbf{Time (s)}','Interpreter','latex')
+ylabel('\textbf{(m/s)}','Interpreter','latex')
 % legend({'$- \frac{1}{mH}\int_{t}^T \ell\sinh(\ell(T-\tau))L_c(\tau)\,d\tau$',...
 %         '$- \frac{1}{mH}\int_{t}^T \cosh(\ell(T-\tau))L_{c}(\tau)\,d\tau$',...
 %         '$- \frac{1}{mH}\big(L_c(T) - \cosh(\ell (T-t))L_{c}(0)$',...
@@ -94,13 +95,12 @@ legend({'$e_1(T,t)$',...
         '$e_2(T,t)$',...
         '$e_3(T,t)$',...
     },'Interpreter','latex')
+tightfig;
 
-
-
-% % tightfig;
 % saveas(f1,[root_dir '/PicsData/PD210412_paper/ErrorTerms_3.png'])
 
-
+pd_dir_2 = 'D:\Dropbox (DynamicLegLocomotion)\MyManuscript\Paper\2022_ASME\tiff\MATLAB\';
+print(f1,[pd_dir_2, 'ErrorTerms_3.tif'],'-dtiff','-r1000')
 
 %%
 

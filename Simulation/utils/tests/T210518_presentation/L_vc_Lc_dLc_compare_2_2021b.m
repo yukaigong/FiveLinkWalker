@@ -201,8 +201,8 @@ set(gca,'YTick',[-10:5:10]);
 xlabel('\textbf{Time (s)}','Interpreter','latex')
 ylabel('{\boldmath$\frac{\dot{L}_c}{mH}$ $(m/s^2)$}','Interpreter','latex')
 
-saveas(f1,[root_dir '/PicsData/PD210518_presentation/vc_FLW_2m.png'])
-saveas(f2,[root_dir '/PicsData/PD210518_presentation/L_FLW_2m.png'])
+% saveas(f1,[root_dir '/PicsData/PD210518_presentation/vc_FLW_2m.png'])
+% saveas(f2,[root_dir '/PicsData/PD210518_presentation/L_FLW_2m.png'])
 % saveas(f3,[root_dir '/PicsData/PD210518_presentation/Lc_FLW_2m.png'])
 % saveas(f4,[root_dir '/PicsData/PD210518_presentation/dLc_FLW_2m.png'])
 
