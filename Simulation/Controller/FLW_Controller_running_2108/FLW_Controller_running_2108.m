@@ -32,7 +32,7 @@ classdef FLW_Controller_running_2108 <matlab.System & matlab.system.mixin.Propag
             Data = Construct_Data();
             % Let the output be torso angle, com height and delta x,delta z of swing
             % feet and com. delta = p_com - p_swfeet.
-            T_ps = 0.3; % stance phase time
+            T_ps = 0.2; % stance phase time
             T_pf = 0.2; % flight phase time
             V = 2; % Desired velocity at the end of a step
             H_nominal = 0.55;
